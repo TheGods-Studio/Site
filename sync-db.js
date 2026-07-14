@@ -8,12 +8,12 @@ const path = require('path');
 
 const SERVER = (process.env.SYNC_SERVER || '').replace(/\/+$/, '');
 const TOKEN = process.env.DB_SYNC_TOKEN || '';
-const LOCAL_DIR = process.env.SYNC_LOCAL_DIR || path.join(process.cwd(), 'db-backup');
+const LOCAL_DIR = process.env.SYNC_LOCAL_DIR || path.join(__dirname, 'db-backup');
 const LOCAL_FILE = path.join(LOCAL_DIR, 'accounts.db');
 const INTERVAL_MS = 5 * 60 * 1000;
 
 if (!SERVER || !TOKEN) {
-  console.error('Defina SYNC_SERVER (ex: https://seu-site.onrender.com) e DB_SYNC_TOKEN no .env ou ambiente.');
+  console.error('Defina SYNC_SERVER (ex: https://the-gods-studio.onrender.com) e DB_SYNC_TOKEN no .env ou ambiente.');
   process.exit(1);
 }
 

@@ -28,13 +28,6 @@
     el._t = setTimeout(() => el.classList.remove('show'), 3200);
   }
 
-  async function sha256Hex(str) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf))
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
-  }
-
   async function apiFetch(path, opts) {
     opts = opts || {};
     opts.headers = Object.assign(
@@ -58,19 +51,6 @@
       return j.authenticated ? j.user : null;
     } catch (_) {
       return null;
-    }
-  }
-
-  async function solveCaptcha() {
-    const res = await fetch('/api/captcha');
-    const { token, challenge, difficulty } = await res.json();
-    const target = '0'.repeat(difficulty);
-    let nonce = 0;
-    while (true) {
-      const h = await sha256Hex(challenge + ':' + nonce);
-      if (h.startsWith(target)) return { token, nonce: String(nonce) };
-      nonce++;
-      if (nonce > 20000000) throw new Error('captcha');
     }
   }
 
@@ -177,7 +157,6 @@
     if (!form) return;
     const errorEl = document.getElementById('auth-error');
     const submit = form.querySelector('button[type="submit"]');
-    const captchaStatus = document.getElementById('captcha-status');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -188,19 +167,6 @@
 
       if (submit) submit.disabled = true;
       try {
-        if (isSignup) {
-          if (captchaStatus) {
-            captchaStatus.className = 'captcha-status';
-            captchaStatus.textContent = 'Verificando que você não é um robô...';
-          }
-          const cap = await solveCaptcha();
-          payload.captchaToken = cap.token;
-          payload.captchaNonce = cap.nonce;
-          if (captchaStatus) {
-            captchaStatus.className = 'captcha-status ok';
-            captchaStatus.textContent = 'Verificado ✓';
-          }
-        }
         const r = await apiFetch(isSignup ? '/api/signup' : '/api/login', {
           method: 'POST',
           body: payload,
@@ -211,10 +177,6 @@
           window.location.href = target;
         } else {
           if (errorEl) errorEl.textContent = (r.data && r.data.error) || 'Algo deu errado.';
-          if (captchaStatus) {
-            captchaStatus.className = 'captcha-status fail';
-            captchaStatus.textContent = 'Tente novamente.';
-          }
         }
       } catch (err) {
         if (errorEl) errorEl.textContent = 'Erro de conexão. Tente novamente.';
@@ -248,8 +210,9 @@
         if (!input) return;
         const show = input.type === 'password';
         input.type = show ? 'text' : 'password';
-        btn.textContent = show ? '🙈' : '👁';
+        btn.classList.toggle('show', show);
         btn.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+        btn.setAttribute('aria-pressed', show ? 'true' : 'false');
       });
     });
   }

@@ -338,9 +338,6 @@ api.post('/signup', (req, res) => {
     if (password !== confirm) {
       return res.status(400).json({ error: 'As senhas não coincidem.' });
     }
-    if (!verifyCaptcha(body.captchaToken, body.captchaNonce)) {
-      return res.status(400).json({ error: 'Falha na verificação anti-bot. Tente novamente.' });
-    }
     if (findByUsername(username)) {
       return res.status(409).json({ error: 'Este nome de usuário já está em uso.' });
     }

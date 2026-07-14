@@ -314,6 +314,43 @@
   outline-offset: 2px;
   border-radius: 6px;
 }
+.pw-toggle svg {
+  width: clamp(16px, 2.4vw, 20px);
+  height: clamp(16px, 2.4vw, 20px);
+  display: block;
+}
+.pw-toggle .eye-closed {
+  display: none;
+}
+.pw-toggle.show .eye-open {
+  display: none;
+}
+.pw-toggle.show .eye-closed {
+  display: block;
+}
+
+/* Logo fixa no canto superior esquerdo (igual à sidebar do index) */
+.auth-logo {
+  position: fixed;
+  top: clamp(8px, 1.2vw, 12px);
+  left: clamp(8px, 1.2vw, 12px);
+  width: clamp(64px, 8vw, 110px);
+  height: clamp(64px, 8vw, 110px);
+  object-fit: contain;
+  z-index: 1000;
+  border: clamp(2px, 0.35vw, 3px) solid rgb(0, 255, 234);
+  border-radius: clamp(6px, 0.8vw, 8px);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  animation: floatMove 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  will-change: transform;
+}
+@keyframes floatMove {
+  0% { transform: translateY(0px) translateX(0px); }
+  33% { transform: translateY(-6px) translateX(3px); }
+  66% { transform: translateY(3px) translateX(-3px); }
+  100% { transform: translateY(0px) translateX(0px); }
+}
 .auth-form .field {
   display: flex;
   flex-direction: column;
@@ -347,19 +384,6 @@
   color: #ff5b6e;
   min-height: 16px;
   text-align: center;
-}
-.captcha-status {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 7px;
-  color: rgba(0, 255, 234, 0.8);
-  text-align: center;
-  line-height: 1.8;
-}
-.captcha-status.ok {
-  color: #6dffb0;
-}
-.captcha-status.fail {
-  color: #ff5b6e;
 }
 .google-btn {
   width: 100%;

@@ -336,7 +336,25 @@
                 background: linear-gradient(90deg, transparent, rgb(0, 255, 234), transparent);
                 animation: borderPulse 2s ease-in-out infinite;
             }
-            
+
+            /* === CABEÇALHO COM A BOX DO TÍTULO NO TOPO DA PÁGINA === */
+            .site-header {
+                position: relative;
+                z-index: 3;
+                text-align: center;
+                padding: clamp(10px, 1.5vw, 16px) clamp(10px, 2.5vw, 20px) clamp(4px, 1vw, 8px);
+                padding-left: calc(var(--sidebar-w) + var(--sidebar-gap));
+            }
+            .site-header .content-box {
+                margin: 0 auto;
+            }
+            @media (max-width: 480px) {
+                .site-header {
+                    padding-top: clamp(10px, 3vw, 16px);
+                    padding-left: calc(var(--sidebar-w) + var(--sidebar-gap));
+                }
+            }
+
             /* === TOP RIGHT BUTTONS === */
             .top-buttons {
                 position: fixed;
@@ -986,13 +1004,16 @@
             </button>
         </div>
         
-        <div class="page-shell">
+        <header class="site-header">
             <div class="content-box">
                 <h1 class="title">
                     <div><span id="typed-title"></span><span class="cursor" id="cursor-title"></span></div>
                     <div><span id="typed-subtitle" style="font-size: 0.5em; opacity: 0.8; color: rgb(0, 255, 234); font-family: 'Press Start 2P', cursive;"></span><span class="cursor" id="cursor-subtitle"></span></div>
                 </h1>
             </div>
+        </header>
+
+        <div class="page-shell">
             <div class="divider-section">
                 <div class="divider-line"></div>
                 <span class="divider-text">Quem somos nós</span>
@@ -1494,14 +1515,20 @@
                         <label>Senha atual</label>
                         <div class="pw-field">
                             <input type="password" name="current" id="cp-current" autocomplete="current-password">
-                            <button type="button" class="pw-toggle" data-target="cp-current" aria-label="Mostrar senha">👁</button>
+                            <button type="button" class="pw-toggle" data-target="cp-current" aria-label="Mostrar senha" aria-pressed="false">
+                                <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            </button>
                         </div>
                     </div>
                     <div class="modal-field">
                         <label>Nova senha</label>
                         <div class="pw-field">
                             <input type="password" name="next" id="cp-next" autocomplete="new-password">
-                            <button type="button" class="pw-toggle" data-target="cp-next" aria-label="Mostrar senha">👁</button>
+                            <button type="button" class="pw-toggle" data-target="cp-next" aria-label="Mostrar senha" aria-pressed="false">
+                                <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            </button>
                         </div>
                     </div>
                     <div class="modal-error" id="change-pw-error"></div>
