@@ -1,0 +1,17 @@
+node_modules/
+npm-debug.log*
+*.log
+
+# Dados de usuários e segredos (nunca versionar)
+data/
+.session-secret
+.env
+.env.*
+!.env.example
+
+# Arquivos temporários
+*.tmp
+.DS_Store
+
+# Banco sincronizado pelo sync-db.js (DEVE ser versionado no repositório)
+db/accounts.db
