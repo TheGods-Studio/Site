@@ -60,7 +60,11 @@
 }
 
 /* === BOTÃO DE CONFIGURAÇÕES (canto da sidebar) === */
-.sidebar-settings {
+.sidebar.sidebar-with-settings {
+  overflow: visible;
+}
+
+.sidebar a.sidebar-settings {
   position: absolute;
   bottom: 14px;
   left: 50%;
@@ -72,7 +76,8 @@
   height: clamp(40px, 5vw, 54px);
   overflow: hidden;
   white-space: nowrap;
-  padding: 0;
+  padding: 0 !important;
+  box-sizing: border-box;
   border-radius: 999px;
   border: 2px solid rgba(0, 255, 234, 0.6);
   background: rgba(0, 0, 0, 0.7);
@@ -81,14 +86,17 @@
   font-family: 'Press Start 2P', cursive;
   font-size: clamp(7px, 0.8vw, 10px);
   justify-content: center;
-  transition: width 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease,
-    background 0.3s ease;
+  transition: left 0.3s ease, transform 0.3s ease, width 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease,
+    border-color 0.3s ease, background 0.3s ease;
   z-index: 5;
 }
-.sidebar-settings[hidden] {
+.sidebar a.sidebar-settings::before {
+  content: none;
+}
+.sidebar a.sidebar-settings[hidden] {
   display: none !important;
 }
-.sidebar-settings:not([hidden]) {
+.sidebar a.sidebar-settings:not([hidden]) {
   display: flex;
 }
 .sidebar-settings .gear {
@@ -100,16 +108,38 @@
   opacity: 0;
   transition: opacity 0.2s ease;
 }
-.sidebar-settings:hover {
-  width: calc(100% - 28px);
+.sidebar a.sidebar-settings:hover,
+.sidebar a.sidebar-settings:focus-visible {
+  left: 14px;
+  transform: translateX(0);
+  width: min(320px, calc(100vw - 28px));
   justify-content: flex-start;
-  padding: 0 16px;
+  padding: 0 16px !important;
   border-color: rgb(0, 255, 234);
+  border-left-color: rgb(0, 255, 234);
   box-shadow: 0 0 24px rgba(0, 255, 234, 0.45);
   background: rgba(0, 0, 0, 0.85);
+  text-shadow: none;
 }
-.sidebar-settings:hover .label {
+.sidebar a.sidebar-settings:hover .label,
+.sidebar a.sidebar-settings:focus-visible .label {
   opacity: 1;
+}
+
+@media (max-width: 640px) {
+  .sidebar a.sidebar-settings:hover,
+  .sidebar a.sidebar-settings:focus-visible {
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(40px, 5vw, 54px);
+    justify-content: center;
+    padding: 0 !important;
+  }
+
+  .sidebar a.sidebar-settings:hover .label,
+  .sidebar a.sidebar-settings:focus-visible .label {
+    opacity: 0;
+  }
 }
 
 /* === MODAL DE CONFIGURAÇÕES === */
