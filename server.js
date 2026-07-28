@@ -456,6 +456,16 @@ api.get('/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime(), db: DB_SYNC_TOKEN ? 'configured' : 'no-sync' });
 });
 
+api.get('/api/test-email', async (req, res) => {
+  const { sendEmail } = require('./mailer');
+  const r = await sendEmail({
+    to: req.query.to || 'test@example.com',
+    subject: 'Teste de e-mail - The Gods Studio',
+    html: '<p>Este é um e-mail de teste.</p>',
+  });
+  res.json(r);
+});
+
 api.get('/captcha', (req, res) => {
   res.json(issueCaptcha());
 });
