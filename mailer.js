@@ -29,12 +29,13 @@ if (SMTP_HOST) {
       port: SMTP_PORT,
       secure: SMTP_SECURE,
       auth: SMTP_USER ? { user: SMTP_USER, pass: SMTP_PASS } : undefined,
-      connectionTimeout: 15000,
-      greetingTimeout: 15000,
-      socketTimeout: 30000,
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 60000,
       tls: {
         rejectUnauthorized: false,
       },
+      debug: true,
     });
     transporter.verify(function (err) {
       if (err) {
