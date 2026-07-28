@@ -19,8 +19,12 @@ const DB_REPO_PATH = process.env.DB_REPO_PATH
   : path.join(ROOT, 'db', 'accounts.db');
 const GIT_REMOTE = process.env.GIT_REMOTE || 'origin';
 const GIT_BRANCH = process.env.GIT_BRANCH || '';
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 const INTERVAL_MS = 5 * 60 * 1000;
 const LOG_FILE = path.join(ROOT, 'sync-db.log');
+const FETCH_TIMEOUT_MS = 30000;
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 5000;
 
 if (!SERVER || !TOKEN) {
   console.error('[sync-db] Defina SYNC_SERVER (ex: https://the-gods-studio.onrender.com) e DB_SYNC_TOKEN no .env ou ambiente.');
@@ -45,7 +49,7 @@ function hashOf(buf) {
 
 async function git(args, allowFail) {
   try {
-    const res = await execFileAsync('git', args, { cwd: ROOT });
+    const res = await execFileAsync('git', args, { cwd: ROOT, timeout: 30000 });
     return (res.stdout || '') + (res.stderr || '');
   } catch (e) {
     if (allowFail) return (e.stdout || '') + (e.stderr || '');
@@ -76,9 +80,33 @@ async function getCurrentBranch() {
   return '';
 }
 
+async function getAuthRemoteUrl() {
+  if (!GITHUB_TOKEN) return GIT_REMOTE;
+  try {
+    const url = (await git(['remote', 'get-url', GIT_REMOTE], true)).trim();
+    if (!url) return GIT_REMOTE;
+    if (url.includes('://')) {
+      return url.replace('://', '://x-access-token:' + GITHUB_TOKEN + '@');
+    }
+    if (url.startsWith('git@')) {
+      return 'https://x-access-token:' + GITHUB_TOKEN + '@' + url.slice(4).replace(':', '/');
+    }
+    return GIT_REMOTE;
+  } catch (_) {
+    return GIT_REMOTE;
+  }
+}
+
 async function pullFromServer() {
   const url = SERVER + '/api/db-backup?token=' + encodeURIComponent(TOKEN);
-  const res = await fetch(url);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  let res;
+  try {
+    res = await fetch(url, { signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
   if (!res.ok) throw new Error('download HTTP ' + res.status + ' ' + res.statusText);
   const buf = Buffer.from(await res.arrayBuffer());
   if (buf.length < 100) {
@@ -90,7 +118,26 @@ async function pullFromServer() {
 async function syncOnce() {
   await log('info', 'Iniciando sincronização do banco de dados a partir de ' + SERVER + '...');
 
-  const buf = await pullFromServer();
+  let buf = null;
+  let lastErr = null;
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
+      buf = await pullFromServer();
+      lastErr = null;
+      break;
+    } catch (e) {
+      lastErr = e;
+      await log('warn', 'Falha ao baixar o banco (tentativa ' + (attempt + 1) + '/' + MAX_RETRIES + '): ' + (e && e.message));
+      if (attempt < MAX_RETRIES - 1) {
+        await new Promise(function (r) { setTimeout(r, RETRY_DELAY_MS); });
+      }
+    }
+  }
+  if (!buf) {
+    await log('error', 'Falha ao baixar o banco de dados após ' + MAX_RETRIES + ' tentativas: ' + (lastErr && lastErr.message));
+    return false;
+  }
+
   const incomingHash = hashOf(buf);
 
   let existingHash = '(ausente)';
@@ -115,8 +162,9 @@ async function syncOnce() {
   const branch = GIT_BRANCH || (await getCurrentBranch());
   await ensureGitIdentity();
 
+  const authRemote = await getAuthRemoteUrl();
   try {
-    await git(['fetch', GIT_REMOTE, branch || '--all'], true);
+    await git(['fetch', authRemote, branch || '--all'], true);
   } catch (e) {
     await log('warn', 'git fetch falhou (continuando): ' + (e && e.message));
   }
@@ -136,15 +184,15 @@ async function syncOnce() {
   for (let attempt = 0; attempt < 2 && !pushed; attempt++) {
     try {
       if (branch) {
-        await git(['push', GIT_REMOTE, branch]);
+        await git(['push', authRemote, branch]);
       } else {
-        await git(['push', GIT_REMOTE]);
+        await git(['push', authRemote]);
       }
       pushed = true;
     } catch (e) {
       await log('warn', 'git push falhou (tentativa ' + (attempt + 1) + '): ' + (e && e.message));
       try {
-        if (branch) await git(['pull', '--rebase', GIT_REMOTE, branch], true);
+        if (branch) await git(['pull', '--rebase', authRemote, branch], true);
       } catch (e2) {
         await log('warn', 'git pull --rebase falhou: ' + (e2 && e2.message));
       }

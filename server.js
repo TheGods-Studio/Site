@@ -452,6 +452,10 @@ api.get('/config', (req, res) => {
   res.json({ googleEnabled: GOOGLE_ENABLED });
 });
 
+api.get('/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime(), db: DB_SYNC_TOKEN ? 'configured' : 'no-sync' });
+});
+
 api.get('/captcha', (req, res) => {
   res.json(issueCaptcha());
 });

@@ -20,6 +20,7 @@ const MAIL_FROM =
   process.env.MAIL_FROM || (SMTP_USER ? `The Gods Studio <${SMTP_USER}>` : 'The Gods Studio <no-reply@thegods.studio>');
 
 let transporter = null;
+let transporterReady = false;
 if (SMTP_HOST) {
   try {
     const nodemailer = require('nodemailer');
@@ -31,8 +32,19 @@ if (SMTP_HOST) {
       connectionTimeout: 15000,
       greetingTimeout: 15000,
       socketTimeout: 30000,
+      tls: {
+        rejectUnauthorized: false,
+      },
     });
-    console.log('[mailer] SMTP configurado (' + SMTP_HOST + ':' + SMTP_PORT + ', secure=' + SMTP_SECURE + ').');
+    transporter.verify(function (err) {
+      if (err) {
+        console.error('[mailer] Falha na verificação do transporter SMTP:', err && err.message);
+        transporterReady = false;
+      } else {
+        transporterReady = true;
+        console.log('[mailer] SMTP verificado com sucesso (' + SMTP_HOST + ':' + SMTP_PORT + ', secure=' + SMTP_SECURE + ').');
+      }
+    });
   } catch (e) {
     console.error('[mailer] Falha ao configurar o transporter SMTP:', e && e.message);
     transporter = null;
