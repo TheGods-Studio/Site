@@ -456,7 +456,7 @@ api.get('/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime(), db: DB_SYNC_TOKEN ? 'configured' : 'no-sync' });
 });
 
-api.get('/api/test-email', async (req, res) => {
+api.get('/test-email', async (req, res) => {
   const { sendEmail } = require('./mailer');
   const r = await sendEmail({
     to: req.query.to || 'test@example.com',
