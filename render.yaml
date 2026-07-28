@@ -42,6 +42,8 @@ services:
         sync: false
       - key: MAIL_FROM
         sync: false
+      - key: RESEND_API_KEY
+        sync: false
 
   - type: worker
     name: the-gods-studio-sync
@@ -67,4 +69,6 @@ services:
       - key: GIT_USER_EMAIL
         sync: false
       - key: GITHUB_TOKEN
+        sync: false
+      - key: RESEND_API_KEY
         sync: false
