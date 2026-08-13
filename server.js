@@ -151,6 +151,15 @@ function createUser(u) {
     'INSERT INTO users (id,username,email,passwordHash,provider,googleSub,createdAt) VALUES (?,?,?,?,?,?,?)'
   ).run(u.id, u.username.toLowerCase(), u.email.toLowerCase(), u.passwordHash, u.provider, u.googleSub || null, u.createdAt);
 }
+function deleteIncompleteSignup(userId) {
+  try {
+    db.prepare('DELETE FROM action_tokens WHERE userId = ?').run(userId);
+    db.prepare('DELETE FROM sessions WHERE userId = ?').run(userId);
+    db.prepare('DELETE FROM users WHERE id = ?').run(userId);
+  } catch (e) {
+    console.error('Falha ao desfazer cadastro sem e-mail:', e);
+  }
+}
 function updatePasswordHash(id, hash) {
   db.prepare('UPDATE users SET passwordHash = ? WHERE id = ?').run(hash, id);
 }
@@ -457,12 +466,12 @@ api.get('/health', (req, res) => {
 });
 
 api.get('/test-email', async (req, res) => {
-  const { sendEmail } = require('./mailer');
-  const r = await sendEmail({
+  const r = await sendMailOrFail(res, {
     to: req.query.to || 'test@example.com',
     subject: 'Teste de e-mail - The Gods Studio',
     html: '<p>Este é um e-mail de teste.</p>',
   });
+  if (!r.ok) return;
   res.json(r);
 });
 
@@ -476,7 +485,7 @@ api.get('/me', (req, res) => {
   res.json({ authenticated: true, user: userPublic(u) });
 });
 
-api.post('/signup', (req, res) => {
+api.post('/signup', async (req, res) => {
   try {
     const ip = req.ip;
     if (!checkRateLimit('signup:' + ip, 10, 15 * 60 * 1000)) {
@@ -520,6 +529,19 @@ api.post('/signup', (req, res) => {
       createdAt: Date.now(),
     };
     createUser(user);
+
+    const token = createActionToken(user.id, 'verify_email', null, 60 * 60 * 1000);
+    const link = baseUrlFromReq(req) + '/api/action/' + token;
+    const r = await sendMailOrFail(res, {
+      to: user.email,
+      subject: 'Confirme seu e-mail - The Gods Studio',
+      html: emailVerifyHtml(link),
+    });
+    if (!r.ok) {
+      deleteIncompleteSignup(user.id);
+      return;
+    }
+
     setSessionCookie(res, user.id, req);
     return res.json({ ok: true, user: userPublic(user) });
   } catch (err) {
