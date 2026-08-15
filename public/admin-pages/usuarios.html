@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Gods — Usuários</title>
+    <link rel="icon" href="../Images/TheGods Studio - LOGO.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" />
+  </head>
+  <body>
+    <canvas id="matrix-canvas"></canvas>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="logo-box"><img src="../Images/TheGods Studio - LOGO.png" alt="Logo" /></div>
+        <div class="brand">PAINEL ADMIN</div>
+        <nav class="nav-list">
+          <a class="nav-link" href="index.html">Dashboard</a>
+          <a class="nav-link active" href="usuarios.html">Usuários</a>
+          <a class="nav-link" href="denuncias.html">Denúncias</a>
+          <a class="nav-link" href="banimentos.html">Banimentos</a>
+          <a class="nav-link" href="administradores.html">Administradores</a>
+          <a class="nav-link" href="configuracoes.html">Configurações</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <h1 class="page-name">Usuários</h1>
+          <div class="top-actions">
+            <span class="user-chip" id="current-user">@admin</span>
+            <a class="button" href="../index.html">Voltar ao site</a>
+          </div>
+        </header>
+
+        <section class="card">
+          <div class="toolbar">
+            <input id="search-input" class="input" type="text" placeholder="Buscar usuário..." />
+            <button class="button primary" type="button">Pesquisar</button>
+            <button class="button success" type="button">Novo usuário</button>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Usuário</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Cargo</th>
+                  <th>Criado</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="users-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-box">
+        <h3 id="modal-title">Detalhes</h3>
+        <div id="modal-body" class="modal-body"></div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

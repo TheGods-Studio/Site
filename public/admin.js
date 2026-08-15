@@ -433,7 +433,7 @@
       else if (action === 'reveal-email') await revealEmail(userId);
       else if (action === 'reset-password') await resetPassword(userId);
       else if (action === 'ban-user') await banUser(userId);
-      else if (action === 'unban-user') await banUser(userId);
+      else if (action === 'unban-user') await unbanUser(userId);
       else if (action === 'unban') await unban(id);
       else if (action === 'revoke-session') await revokeSession(id);
       else if (action === 'remove-admin') await removeAdmin(userId);
@@ -487,10 +487,20 @@
     else { toast('Erro: ' + (r.data.error || 'falhou')); }
   }
 
+  async function unbanUser(userId) {
+    if (!userId) return;
+    const detail = await apiFetch(API_BASE + '/users/' + userId);
+    if (!detail.ok || !detail.data || !detail.data.user || !detail.data.user.ban || !detail.data.user.ban.id) {
+      toast('Este usuário não está banido.');
+      return;
+    }
+    await unban(detail.data.user.ban.id);
+  }
+
   async function unban(banId) {
     if (!confirm('Deseja realmente desbanir este usuário?')) return;
     const r = await apiFetch(API_BASE + '/bans/' + banId + '/unban', { method: 'POST' });
-    if (r.ok) { toast('Banimento removido.'); loadBans(); }
+    if (r.ok) { toast('Banimento removido.'); closeModal(); loadBans(); }
     else { toast('Erro: ' + (r.data.error || 'falhou')); }
   }
 
