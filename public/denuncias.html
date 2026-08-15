@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Gods - Denúncias</title>
+    <link rel="icon" type="image/png" href="Images/TheGods Studio - LOGO.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; min-height: 100vh; overflow-x: hidden;
+            background: linear-gradient(135deg, #000000 0%, #005757 50%, #00a58f 100%);
+            background-size: 300% 300%; animation: gradientShift 18s ease infinite;
+            position: relative; padding: 0;
+        }
+        #matrix-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; opacity: 0.5; pointer-events: none;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .auth-wrap {
+            position: relative; z-index: 2; min-height: 100vh;
+            display: flex; align-items: flex-start; justify-content: center;
+            padding: clamp(80px, 10vw, 120px) 16px 40px;
+        }
+        .auth-card {
+            width: min(100%, 700px);
+            background: rgba(0, 0, 0, 0.8);
+            border: clamp(2px, 0.35vw, 3px) solid rgb(0, 255, 234);
+            border-radius: clamp(10px, 1.4vw, 16px);
+            box-shadow: 0 0 50px rgba(0, 255, 234, 0.2);
+            padding: clamp(22px, 3vw, 38px);
+        }
+        .auth-title {
+            font-family: 'Press Start 2P', cursive;
+            color: rgb(0, 255, 234);
+            -webkit-text-stroke: 1px; -webkit-text-stroke-color: black;
+            text-shadow: 1px 8px 5px rgba(0, 0, 0, 1);
+            font-size: clamp(16px, 3vw, 26px);
+            margin: 0 0 24px; line-height: 1.4;
+        }
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px; color: rgba(0, 255, 234, 0.9);
+            letter-spacing: 0.5px; margin-bottom: 8px; display: block;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; font-family: 'Press Start 2P', cursive;
+            font-size: 9px; color: #fff; background: rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(0, 255, 234, 0.4);
+            border-radius: 8px; padding: 10px; box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: rgb(0, 255, 234);
+            box-shadow: 0 0 16px rgba(0, 255, 234, 0.25);
+        }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .auth-submit {
+            width: 100%; padding: 14px; font-family: 'Press Start 2P', cursive;
+            font-size: 11px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, rgb(0, 255, 234), rgb(0, 200, 180));
+            color: #000; cursor: pointer; letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        .auth-submit:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0, 255, 234, 0.4); }
+        .auth-submit:disabled { opacity: 0.6; cursor: wait; transform: none; }
+        .auth-error {
+            font-family: 'Press Start 2P', cursive; font-size: 8px;
+            line-height: 1.9; color: #ff5b6e; min-height: 16px; text-align: center;
+        }
+        .auth-home {
+            font-family: 'Press Start 2P', cursive; font-size: 7px;
+            color: rgba(0, 255, 234, 0.7); text-decoration: none;
+            display: inline-block; margin-top: 10px;
+        }
+        .auth-home:hover { color: rgb(0, 255, 234); }
+        .file-list { margin-top: 8px; }
+        .file-item {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 8px; color: rgba(0, 255, 234, 0.9); margin-bottom: 6px;
+        }
+        .file-item button {
+            font-family: 'Press Start 2P', cursive; font-size: 7px;
+            padding: 4px 8px; border-radius: 6px; cursor: pointer;
+            border: 1px solid rgba(255, 60, 90, 0.5); background: rgba(255, 60, 90, 0.1); color: #ff5b6e;
+        }
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: rgba(0, 0, 0, 0.92); border: 1.5px solid rgba(0, 255, 234, 0.5);
+            color: rgb(0, 255, 234); font-family: 'Press Start 2P', cursive;
+            font-size: 8px; line-height: 1.8; padding: 14px 18px; border-radius: 10px;
+            z-index: 3000; opacity: 0; pointer-events: none; transition: all 0.3s ease;
+            max-width: 90vw; text-align: center;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+    <img src="Images/TheGods Studio - LOGO.png" alt="The Gods Studio" class="auth-logo">
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <h1 class="auth-title">DENÚNCIAS</h1>
+            <form id="report-form">
+                <div class="form-group">
+                    <label for="category">Categoria</label>
+                    <select id="category" name="category" required>
+                        <option value="">Selecione...</option>
+                        <option value="Assédio">Assédio</option>
+                        <option value="Ameaças">Ameaças</option>
+                        <option value="Fraude">Fraude</option>
+                        <option value="Spam">Spam</option>
+                        <option value="Comportamento inadequado">Comportamento inadequado</option>
+                        <option value="Violação das regras">Violação das regras</option>
+                        <option value="Conteúdo ilegal">Conteúdo ilegal</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reported-users">Usuários denunciados (username ou ID, separados por vírgula)</label>
+                    <input type="text" id="reported-users" name="reportedUsers" placeholder="usuario1, usuario2">
+                </div>
+                <div class="form-group">
+                    <label for="description">Descrição</label>
+                    <textarea id="description" name="description" required placeholder="Descreva o que aconteceu..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Anexos (imagens/vídeos)</label>
+                    <input type="file" id="attachments" name="attachments" accept="image/png,image/jpeg,image/webp,video/mp4,video/webm" multiple>
+                    <div class="file-list" id="file-list"></div>
+                </div>
+                <input type="hidden" id="attachment-paths" value="">
+                <div class="auth-error" id="report-error"></div>
+                <button type="submit" class="auth-submit">Enviar denúncia</button>
+            </form>
+            <a class="auth-home" href="index.html">← Voltar ao início</a>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script>
+    (function () {
+      const API_BASE = '/api/public';
+      const UPLOAD_API = '/api/admin/upload';
+      let uploadedFiles = [];
+
+      function escapeHtml(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function toast(msg) {
+        const el = document.getElementById('toast');
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(el._t);
+        el._t = setTimeout(() => el.classList.remove('show'), 3500);
+      }
+
+      async function apiFetch(path, opts) {
+        opts = opts || {};
+        const headers = Object.assign({ 'X-Requested-With': 'xmlhttprequest' }, opts.headers || {});
+        if (opts.body && typeof opts.body !== 'string') {
+          if (opts.body instanceof FormData) {
+            delete headers['Content-Type'];
+            opts.body = opts.body;
+          } else {
+            opts.body = JSON.stringify(opts.body);
+            headers['Content-Type'] = 'application/json';
+          }
+        }
+        const res = await fetch(path, Object.assign({}, opts, { headers }));
+        let data = null;
+        try { data = await res.json(); } catch (_) {}
+        return { ok: res.ok, status: res.status, data };
+      }
+
+      async function uploadFiles(files) {
+        const form = new FormData();
+        for (let i = 0; i < files.length; i++) form.append('files', files[i]);
+        const r = await apiFetch(UPLOAD_API, { method: 'POST', body: form });
+        if (r.ok) return r.data.files || [];
+        throw new Error(r.data.error || 'Falha no upload');
+      }
+
+      function renderFileList(files) {
+        const list = document.getElementById('file-list');
+        list.innerHTML = files.map(function (f, idx) {
+          return '<div class="file-item"><span>' + escapeHtml(f.originalName || f.filename) + '</span><button data-idx="' + idx + '">Remover</button></div>';
+        }).join('');
+        list.querySelectorAll('button[data-idx]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const i = parseInt(btn.getAttribute('data-idx'), 10);
+            uploadedFiles.splice(i, 1);
+            renderFileList(uploadedFiles);
+          });
+        });
+      }
+
+      document.getElementById('attachments').addEventListener('change', async function (e) {
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
+        try {
+          toast('Enviando arquivos...');
+          const uploaded = await uploadFiles(files);
+          uploadedFiles = uploadedFiles.concat(uploaded);
+          renderFileList(uploadedFiles);
+          toast('Arquivos enviados.');
+        } catch (err) {
+          toast('Erro no upload: ' + err.message);
+        }
+      });
+
+      document.getElementById('report-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const errEl = document.getElementById('report-error');
+        errEl.textContent = '';
+        const category = document.getElementById('category').value;
+        const description = document.getElementById('description').value.trim();
+        const reportedRaw = document.getElementById('reported-users').value.trim();
+        if (!category || !description) { errEl.textContent = 'Preencha todos os campos obrigatórios.'; return; }
+        const reportedUserIds = reportedRaw ? reportedRaw.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
+        const btn = e.target.querySelector('button[type="submit"]');
+        if (btn) btn.disabled = true;
+        try {
+          const r = await apiFetch(API_BASE + '/reports', {
+            method: 'POST',
+            body: { category: category, description: description, reportedUserIds: reportedUserIds, attachments: uploadedFiles }
+          });
+          if (r.ok) {
+            toast('Denúncia enviada com sucesso.');
+            uploadedFiles = [];
+            renderFileList([]);
+            e.target.reset();
+          } else {
+            errEl.textContent = (r.data && r.data.error) || 'Erro ao enviar denúncia.';
+          }
+        } catch (err) {
+          errEl.textContent = 'Erro de conexão.';
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      });
+    })();
+    </script>
+</body>
+</html>
