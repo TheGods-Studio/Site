@@ -2235,7 +2235,7 @@ app.get('/admin', (req, res) => {
   const u = getUserFromReq(req);
   if (!u) return res.redirect('/login.html?next=' + encodeURIComponent('/admin'));
   if (!isAdminUser(u.id)) return res.status(403).send('Acesso negado: você não possui acesso administrativo.');
-  res.sendFile(path.join(PUBLIC_DIR, 'admin.html'));
+  res.sendFile(path.join(PUBLIC_DIR, 'admin-new.html'));
 });
 
 app.use(banCheckMiddleware);
