@@ -433,6 +433,7 @@
       else if (action === 'reveal-email') await revealEmail(userId);
       else if (action === 'reset-password') await resetPassword(userId);
       else if (action === 'ban-user') await banUser(userId);
+      else if (action === 'unban-user') await banUser(userId);
       else if (action === 'unban') await unban(id);
       else if (action === 'revoke-session') await revokeSession(id);
       else if (action === 'remove-admin') await removeAdmin(userId);
@@ -607,6 +608,102 @@
     const r = await apiFetch(API_BASE + '/roles/' + roleId, { method: 'DELETE' });
     if (r.ok) { toast('Cargo excluído.'); loadRoles(); }
     else { toast('Erro: ' + (r.data.error || 'falhou')); }
+  }
+
+  async function viewUser(userId) {
+    const r = await apiFetch(API_BASE + '/users/' + userId);
+    if (!r.ok) { toast('Erro ao carregar usuário.'); return; }
+    const u = r.data.user;
+    const statusMap = { active: 'Ativo', banido: 'Banido' };
+    let html = '<div style="overflow-y:auto;max-height:70vh;">';
+    html += '<h3>Informações Básicas</h3>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:8px;margin-bottom:18px;">';
+    html += '<p><strong>ID:</strong><br>' + escapeHtml(u.id) + '</p>';
+    html += '<p><strong>Username:</strong><br>' + escapeHtml(u.username) + '</p>';
+    html += '<p><strong>Email:</strong><br>' + (u.emailMasked ? escapeHtml(u.email) : escapeHtml(u.email)) + '</p>';
+    html += '<p><strong>Criado:</strong><br>' + formatDate(u.createdAt) + '</p>';
+    html += '<p><strong>Status:</strong><br><span class="badge ' + (u.status === 'banido' ? 'badge-banned' : 'badge-active') + '">' + statusMap[u.status] + '</span></p>';
+    html += '</div>';
+    if (u.roles && u.roles.length > 0) {
+      html += '<h3>Cargos</h3>';
+      html += '<p style="font-size:8px;">' + u.roles.map(r => '<span class="badge badge-admin">' + escapeHtml(r) + '</span>').join(' ') + '</p>';
+    }
+    if (u.ban && u.ban.id) {
+      html += '<h3>Banimento Ativo</h3>';
+      html += '<p style="font-size:8px;"><strong>Motivo:</strong> ' + escapeHtml(u.ban.reason || '-') + '<br>';
+      html += '<strong>Tipo:</strong> ' + (u.ban.type === 'permanent' ? 'Permanente' : 'Temporário') + '<br>';
+      html += '<strong>Início:</strong> ' + formatDate(u.ban.startDate) + '<br>';
+      html += '<strong>Término:</strong> ' + (u.ban.endDate ? formatDate(u.ban.endDate) : 'Permanente') + '</p>';
+    }
+    if (u.purchases && u.purchases.length > 0) {
+      html += '<h3>Compras Recentes</h3>';
+      html += '<table class="admin-table" style="font-size:7px;"><thead><tr><th>Produto</th><th>Valor</th><th>Data</th></tr></thead><tbody>';
+      for (const p of u.purchases.slice(0, 10)) {
+        html += '<tr><td>' + escapeHtml(p.product) + '</td><td>R$ ' + Number(p.value).toFixed(2) + '</td><td>' + formatDate(p.createdAt) + '</td></tr>';
+      }
+      html += '</tbody></table>';
+    }
+    if (u.sessions && u.sessions.length > 0) {
+      html += '<h3>Sessões Ativas</h3>';
+      html += '<table class="admin-table" style="font-size:7px;"><thead><tr><th>Dispositivo</th><th>IP</th><th>Localização</th></tr></thead><tbody>';
+      for (const s of u.sessions.slice(0, 5)) {
+        html += '<tr><td>' + escapeHtml(s.device || '-') + '</td><td>' + escapeHtml(s.ip || '-') + '</td><td>' + escapeHtml(s.location || '-') + '</td></tr>';
+      }
+      html += '</tbody></table>';
+    }
+    html += '</div>';
+    let actions = '<button class="admin-btn warning" data-action="ban-user" data-user="' + u.id + '">Banir usuário</button>';
+    if (u.status === 'banido') {
+      actions += ' <button class="admin-btn success" data-action="unban-user" data-user="' + u.id + '">Desbanir</button>';
+    }
+    actions += ' <button class="admin-btn" onclick="window._closeModal()">Fechar</button>';
+    openModal('Detalhes do Usuário', html, actions);
+  }
+
+  async function viewReport(reportId) {
+    const r = await apiFetch(API_BASE + '/reports/' + reportId);
+    if (!r.ok) { toast('Erro ao carregar denúncia.'); return; }
+    const rep = r.data.report;
+    const statusMap = { open: 'Aberta', analyzing: 'Em análise', resolved: 'Resolvida', rejected: 'Rejeitada', archived: 'Arquivada' };
+    const priorityMap = { low: 'Baixa', medium: 'Média', high: 'Alta' };
+    let html = '<div style="overflow-y:auto;max-height:70vh;font-size:8px;">';
+    html += '<h3>Informações da Denúncia</h3>';
+    html += '<p><strong>ID:</strong> ' + escapeHtml(rep.id) + '</p>';
+    html += '<p><strong>Denunciante:</strong> ' + (rep.reporter ? escapeHtml(rep.reporter.username) : '-') + '</p>';
+    html += '<p><strong>Denunciados:</strong> ' + (rep.reportedUsers && rep.reportedUsers.length > 0 ? rep.reportedUsers.map(u => escapeHtml(u.username)).join(', ') : '-') + '</p>';
+    html += '<p><strong>Categoria:</strong> ' + escapeHtml(rep.category || '-') + '</p>';
+    html += '<p><strong>Status:</strong> <span class="badge badge-' + rep.status + '">' + (statusMap[rep.status] || rep.status) + '</span></p>';
+    html += '<p><strong>Prioridade:</strong> ' + (priorityMap[rep.priority] || rep.priority) + '</p>';
+    html += '<p><strong>Criada:</strong> ' + formatDate(rep.createdAt) + '</p>';
+    html += '<h3>Descrição</h3>';
+    html += '<p style="line-height:1.6;white-space:pre-wrap;">' + escapeHtml(rep.description || '-') + '</p>';
+    if (rep.attachments && rep.attachments.length > 0) {
+      html += '<h3>Anexos</h3>';
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">';
+      for (const att of rep.attachments) {
+        const isImage = att.mimeType && att.mimeType.startsWith('image/');
+        html += '<div style="border:1px solid rgba(0,255,234,0.3);border-radius:6px;padding:8px;">';
+        if (isImage) {
+          html += '<img src="/api/admin/uploads/' + escapeHtml(att.filename) + '" style="max-width:100%;max-height:150px;border-radius:4px;">';
+        } else {
+          html += '<p style="margin:0;">📎 ' + escapeHtml(att.originalName) + '<br><small>' + (att.size / 1024).toFixed(1) + ' KB</small></p>';
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+    const allowed = ['open', 'analyzing', 'resolved', 'rejected', 'archived'];
+    const statusOptions = allowed.map(s => '<option value="' + s + '"' + (s === rep.status ? ' selected' : '') + '>' + (statusMap[s] || s) + '</option>').join('');
+    let actions = '<div style="margin-bottom:10px;">';
+    actions += '<label style="font-size:8px;display:block;margin-bottom:6px;">Novo Status:</label>';
+    actions += '<select id="report-status-change" class="admin-select" style="width:100%;margin-bottom:10px;">' + statusOptions + '</select>';
+    actions += '<textarea id="report-note" class="admin-textarea" placeholder="Observação interna..." style="width:100%;min-height:60px;margin-bottom:10px;"></textarea>';
+    actions += '</div>';
+    actions += '<button class="admin-btn primary" data-action="change-report-status" data-id="' + rep.id + '">Atualizar Status</button>';
+    if (rep.status !== 'archived') actions += ' <button class="admin-btn danger" data-action="delete-report" data-id="' + rep.id + '">Excluir</button>';
+    actions += ' <button class="admin-btn" onclick="window._closeModal()">Fechar</button>';
+    openModal('Detalhes da Denúncia', html, actions);
   }
 
   window._closeModal = closeModal;

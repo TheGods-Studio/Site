@@ -766,6 +766,14 @@ setInterval(() => {
   for (const [k, v] of captchas) if (v.exp < now) captchas.delete(k);
 }, 60 * 1000).unref();
 
+// Auto-expire temporary bans
+setInterval(() => {
+  try {
+    const now = Date.now();
+    db.prepare('UPDATE bans SET status = \'expired\' WHERE status = \'active\' AND endDate IS NOT NULL AND endDate < ?').run(now);
+  } catch (_) {}
+}, 60 * 1000).unref();
+
 const rateLimits = new Map();
 function checkRateLimit(key, max, windowMs) {
   const now = Date.now();
