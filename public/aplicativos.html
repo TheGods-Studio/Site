@@ -97,7 +97,7 @@
                 min-height: 100vh;
                 margin: 0 auto;
                 padding: clamp(8px, 2vw, 16px) clamp(10px, 2.5vw, 20px) clamp(24px, 4vw, 40px);
-                padding-top: clamp(100px, 12vw, 180px);
+                padding-top: 0;
                 padding-left: clamp(180px, 20vw, 280px);
                 padding-right: clamp(10px, 2vw, 20px);
                 display: flex;
@@ -188,17 +188,17 @@
             .sidebar a:hover,
             .sidebar a.active { padding-left: 32px; }
             @media (max-width: 768px) {
-                .page-shell { padding-left: clamp(120px, 15vw, 170px); padding-top: clamp(80px, 10vw, 120px); }
+                .page-shell { padding-left: clamp(120px, 15vw, 170px); padding-top: 0; }
             }
             @media (max-width: 640px) {
-                .page-shell { padding-left: clamp(90px, 12vw, 130px) !important; padding-top: clamp(70px, 9vw, 90px) !important; }
+                .page-shell { padding-left: clamp(90px, 12vw, 130px) !important; padding-top: 0 !important; }
                 .sidebar { width: clamp(80px, 12vw, 120px) !important; top: clamp(50px, 7vw, 70px) !important; }
                 .sidebar .logo-sidebar { width: clamp(45px, 5.5vw, 60px) !important; height: clamp(45px, 5.5vw, 60px) !important; }
                 .sidebar a { font-size: 6.5px !important; padding: 5px 8px !important; }
                 .divider-text { font-size: clamp(8px, 2.2vw, 12px); white-space: normal; }
             }
             @media (max-width: 480px) {
-                .page-shell { padding-left: 8px !important; padding-top: clamp(55px, 8vw, 70px) !important; }
+                .page-shell { padding-left: 8px !important; padding-top: 0 !important; }
                 .sidebar { width: clamp(55px, 9vw, 80px) !important; top: clamp(40px, 6vw, 55px) !important; }
                 .sidebar .logo-sidebar { width: clamp(32px, 4.5vw, 45px) !important; height: clamp(32px, 4.5vw, 45px) !important; }
                 .sidebar a { font-size: 5.5px !important; padding: 4px 6px !important; }
