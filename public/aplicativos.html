@@ -64,9 +64,10 @@
                 opacity: 1;
             }
             .app-tooltip strong {
-                font-family: 'Press Start 2P', cursive;
+                font-family: sans-serif;
                 font-size: clamp(9px, 1vw, 12px);
                 color: #fff;
+                font-weight: 700;
                 text-shadow: 0 0 14px rgba(0, 255, 234, 0.4);
                 display: block;
                 margin-bottom: 10px;
@@ -87,6 +88,119 @@
                     transform: translateX(-50%) translateY(0) !important;
                     width: 200px !important;
                 }
+            }
+
+            /* Estrutura visual alinhada ao shop.html */
+            .page-shell {
+                width: 100%;
+                max-width: 1280px;
+                min-height: 100vh;
+                margin: 0 auto;
+                padding: clamp(8px, 2vw, 16px) clamp(10px, 2.5vw, 20px) clamp(24px, 4vw, 40px);
+                padding-top: clamp(100px, 12vw, 180px);
+                padding-left: clamp(180px, 20vw, 280px);
+                padding-right: clamp(10px, 2vw, 20px);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+            }
+            .site-header {
+                position: relative;
+                z-index: 3;
+                width: 100%;
+                padding: clamp(10px, 1.5vw, 16px) clamp(10px, 2.5vw, 20px) clamp(4px, 1vw, 8px);
+                padding-left: calc(var(--sidebar-w, 220px) + var(--sidebar-gap, 24px));
+                text-align: center;
+            }
+            .site-header .content-box { margin: 0 auto; }
+            .content-box {
+                max-width: 90%;
+                padding: clamp(8px, 1vw, 16px);
+                background: rgba(0, 0, 0, 0.7);
+                border: clamp(2px, 0.35vw, 3px) solid rgb(0, 255, 234);
+                border-radius: clamp(6px, 0.8vw, 8px);
+                animation: fadeInUp 0.8s ease-out;
+            }
+            .title {
+                margin: 0;
+                padding: clamp(10px, 2vw, 20px);
+                font-family: 'Press Start 2P', cursive;
+                color: rgb(0, 255, 234);
+                text-align: center;
+                text-shadow: 1px 8px 5px rgba(0, 0, 0, 1);
+                font-size: clamp(14px, 2.2vw, 24px);
+                line-height: 1.4;
+            }
+            .content-box .title {
+                background: linear-gradient(90deg, rgb(0, 255, 234), rgb(0, 200, 180), rgb(0, 255, 234));
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                display: inline-block;
+                min-width: 200px;
+            }
+            .divider-section {
+                position: relative;
+                z-index: 2;
+                width: 100%;
+                margin: clamp(30px, 5vw, 60px) auto 0;
+                display: flex;
+                align-items: center;
+                gap: clamp(16px, 2vw, 32px);
+            }
+            .divider-line {
+                flex: 1;
+                height: 3px;
+                background: linear-gradient(90deg, transparent, rgba(0, 255, 234, 0.25), rgba(0, 255, 234, 0.5), rgba(0, 255, 234, 0.25), transparent);
+            }
+            .divider-text {
+                flex-shrink: 0;
+                padding: 0 clamp(12px, 1.5vw, 24px);
+                color: rgb(0, 255, 234);
+                font-family: 'Press Start 2P', cursive;
+                font-size: clamp(14px, 1.3vw, 24px);
+                line-height: 1.4;
+                text-align: center;
+                white-space: nowrap;
+            }
+            .sidebar {
+                width: clamp(180px, 14vw, 240px);
+                top: clamp(8px, 1.2vw, 12px);
+                left: clamp(1px, calc(1.2vw + 10px), 2px);
+                bottom: clamp(8px, 1.2vw, 12px);
+                padding: 12px 0;
+                background: rgba(0, 0, 0, 0.85);
+                border-radius: 12px;
+            }
+            .sidebar .logo-sidebar {
+                width: clamp(120px, 12vw, 160px);
+                height: clamp(120px, 12vw, 160px);
+                margin: 0 auto 12px;
+            }
+            .sidebar a {
+                padding: 12px 20px;
+                font-size: clamp(9px, 0.9vw, 13px);
+            }
+            .sidebar a:hover,
+            .sidebar a.active { padding-left: 32px; }
+            @media (max-width: 768px) {
+                .page-shell { padding-left: clamp(120px, 15vw, 170px); padding-top: clamp(80px, 10vw, 120px); }
+            }
+            @media (max-width: 640px) {
+                .page-shell { padding-left: clamp(90px, 12vw, 130px) !important; padding-top: clamp(70px, 9vw, 90px) !important; }
+                .sidebar { width: clamp(80px, 12vw, 120px) !important; top: clamp(50px, 7vw, 70px) !important; }
+                .sidebar .logo-sidebar { width: clamp(45px, 5.5vw, 60px) !important; height: clamp(45px, 5.5vw, 60px) !important; }
+                .sidebar a { font-size: 6.5px !important; padding: 5px 8px !important; }
+                .divider-text { font-size: clamp(8px, 2.2vw, 12px); white-space: normal; }
+            }
+            @media (max-width: 480px) {
+                .page-shell { padding-left: 8px !important; padding-top: clamp(55px, 8vw, 70px) !important; }
+                .sidebar { width: clamp(55px, 9vw, 80px) !important; top: clamp(40px, 6vw, 55px) !important; }
+                .sidebar .logo-sidebar { width: clamp(32px, 4.5vw, 45px) !important; height: clamp(32px, 4.5vw, 45px) !important; }
+                .sidebar a { font-size: 5.5px !important; padding: 4px 6px !important; }
+                .divider-text { font-size: clamp(7px, 1.8vw, 10px); }
             }
         </style>
     </head>
@@ -120,32 +234,31 @@
                 <span class="icon"></span>
                 <span class="lock-icon"></span>Admin
             </a>
-            <a href="config.html" class="sidebar-settings" id="settings-btn" hidden aria-label="Configurações da Conta">
-                <span class="gear">Configurações</span>
+            <a href="config.html" id="settings-btn" hidden aria-label="Configurações da Conta">
+                Configurações
             </a>
         </div>
 
         <div class="page-shell">
-            <header class="site-header">
-                <div class="content-box">
-                    <h1 class="title">
-                        <div><span id="typed-title"></span><span class="cursor" id="cursor-title"></span></div>
-                        <div><span id="typed-subtitle" style="font-size: 0.5em; opacity: 0.8; color: rgb(0, 255, 234); font-family: 'Press Start 2P', cursive;"></span><span class="cursor" id="cursor-subtitle"></span></div>
-                    </h1>
-                </div>
-                <div class="divider-section">
-                    <div class="divider-line"></div>
-                    <span class="divider-text">Hacking/CyberSecurity - Programming</span>
-                    <div class="divider-line"></div>
-                </div>
-            </header>
+            <div class="content-box">
+                <h1 class="title">
+                    <div><span id="typed-title"></span><span class="cursor" id="cursor-title"></span></div>
+                    <div><span id="typed-subtitle" style="font-size: 0.5em; opacity: 0.8; color: rgb(0, 255, 234); font-family: 'Press Start 2P', cursive;"></span><span class="cursor" id="cursor-subtitle"></span></div>
+                </h1>
+            </div>
+
+            <div class="divider-section">
+                <div class="divider-line"></div>
+                <span class="divider-text">Hacking/CyberSecurity - Programming</span>
+                <div class="divider-line"></div>
+            </div>
 
             <div class="section-content">
                 <div class="app-grid">
                     <div class="app-item">
                         <img src="Images/TheGods Studio - LOGO.png" alt="App" class="app-btn">
                         <div class="app-tooltip">
-                            <strong>GØD$ T€©H • G£Ñ</strong>
+                            <strong>GodTech Gen</strong>
                             <p>Uma plataforma completa de CyberSecurity e Hacking, reunindo recursos versáteis, interface intuitiva e desempenho otimizado para estudos e operacoes autorizadas.</p>
                         </div>
                     </div>
