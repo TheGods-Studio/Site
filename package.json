@@ -1,0 +1,21 @@
+{
+  "name": "the-gods-studio",
+  "version": "1.0.0",
+  "description": "Site institucional da The Gods Studio com sistema de autenticação seguro.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js",
+    "sync": "node sync-db.js"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.0"
+  }
+}

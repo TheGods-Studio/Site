@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Gods - Painel Admin</title>
+    <link rel="icon" type="image/png" href="Images/TheGods Studio - LOGO.png">
+    <link rel="stylesheet" href="site-theme.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        
+        :root {
+            --sidebar-w: clamp(180px, 14vw, 240px);
+            --sidebar-gap: clamp(20px, 2.5vw, 44px);
+            --accent: rgb(0, 255, 234);
+            --accent-dark: rgb(0, 200, 180);
+            --danger: #ff5b6e;
+            --success: #00ff72;
+            --warning: #ffcc00;
+            --bg-dark: #000000;
+            --bg-panel: rgba(0, 0, 0, 0.85);
+            --border-line: rgba(0, 255, 234, 0.3);
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(135deg, #000000 0%, #005757 50%, #00a58f 100%);
+            background-size: 300% 300%;
+            animation: gradientShift 18s ease infinite;
+            color: var(--accent);
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .admin-shell {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* SIDEBAR */
+        .admin-sidebar {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            bottom: 12px;
+            width: var(--sidebar-w);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--border-line);
+            border-radius: 14px;
+            padding: 16px 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 255, 234, 0.3) transparent;
+        }
+
+        .admin-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 234, 0.3);
+            border-radius: 3px;
+        }
+
+        .admin-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 234, 0.6);
+        }
+
+        .admin-logo-box {
+            display: flex;
+            justify-content: center;
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--border-line);
+            margin-bottom: 8px;
+        }
+
+        .admin-logo-box img {
+            width: clamp(60px, 8vw, 90px);
+            height: clamp(60px, 8vw, 90px);
+            object-fit: contain;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-brand {
+            text-align: center;
+            font-size: clamp(7px, 0.7vw, 9px);
+            letter-spacing: 2px;
+            color: var(--accent);
+            padding: 0 8px 12px;
+            border-bottom: 1px solid var(--border-line);
+            margin-bottom: 8px;
+        }
+
+        .admin-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 4px;
+            flex: 1;
+        }
+
+        .admin-nav-item {
+            display: block;
+            padding: 12px 14px;
+            text-decoration: none;
+            color: rgba(0, 255, 234, 0.8);
+            border-left: 3px solid transparent;
+            border-radius: 8px;
+            font-size: clamp(6.5px, 0.65vw, 9px);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-family: 'Press Start 2P', cursive;
+            text-align: left;
+        }
+
+        .admin-nav-item::before {
+            content: '▸';
+            position: absolute;
+            margin-left: -18px;
+            opacity: 0;
+            transition: 0.25s ease;
+        }
+
+        .admin-nav-item:hover,
+        .admin-nav-item.active {
+            background: rgba(0, 255, 234, 0.08);
+            border-left-color: var(--accent);
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .admin-nav-item:hover::before,
+        .admin-nav-item.active::before {
+            opacity: 1;
+        }
+
+        .admin-logout {
+            margin-top: auto;
+            padding: 12px 14px;
+            border-top: 1px solid var(--border-line);
+            padding-top: 16px;
+        }
+
+        .admin-logout button {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 91, 110, 0.12);
+            border: 1.5px solid rgba(255, 91, 110, 0.5);
+            color: var(--danger);
+            border-radius: 8px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(6px, 0.6vw, 8px);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .admin-logout button:hover {
+            background: rgba(255, 91, 110, 0.25);
+            box-shadow: 0 0 20px rgba(255, 91, 110, 0.3);
+        }
+
+        /* MAIN CONTENT */
+        .admin-content {
+            flex: 1;
+            margin-left: calc(var(--sidebar-w) + var(--sidebar-gap));
+            padding: clamp(16px, 2.5vw, 32px);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .admin-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .admin-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .admin-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 234, 0.2);
+            border-radius: 4px;
+        }
+
+        .admin-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 234, 0.4);
+        }
+
+        /* HEADER */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-line);
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: clamp(16px, 2vw, 24px);
+            color: #fff;
+            text-shadow: 0 0 12px rgba(0, 255, 234, 0.4);
+        }
+
+        .admin-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: clamp(7px, 0.75vw, 9px);
+        }
+
+        .admin-user-chip {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-line);
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: var(--accent);
+        }
+
+        .admin-user-chip .username {
+            font-weight: bold;
+        }
+
+        .admin-btn {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border-line);
+            background: rgba(0, 0, 0, 0.6);
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(6px, 0.6vw, 8px);
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .admin-btn:hover {
+            background: rgba(0, 255, 234, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0, 255, 234, 0.2);
+        }
+
+        .admin-btn.primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #000;
+            border-color: transparent;
+        }
+
+        .admin-btn.primary:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 234, 0.4);
+        }
+
+        .admin-btn.danger {
+            background: rgba(255, 91, 110, 0.12);
+            border-color: rgba(255, 91, 110, 0.5);
+            color: var(--danger);
+        }
+
+        .admin-btn.danger:hover {
+            background: rgba(255, 91, 110, 0.25);
+            box-shadow: 0 0 20px rgba(255, 91, 110, 0.3);
+        }
+
+        .admin-btn.success {
+            background: rgba(0, 255, 114, 0.12);
+            border-color: rgba(0, 255, 114, 0.5);
+            color: var(--success);
+        }
+
+        .admin-btn.success:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 114, 0.3);
+        }
+
+        .admin-btn.warning {
+            background: rgba(255, 204, 0, 0.12);
+            border-color: rgba(255, 204, 0, 0.5);
+            color: var(--warning);
+        }
+
+        .admin-btn.warning:hover {
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
+        }
+
+        /* CARD */
+        .admin-card {
+            background: rgba(0, 0, 0, 0.72);
+            border: 2px solid var(--border-line);
+            border-radius: 12px;
+            padding: clamp(16px, 2vw, 28px);
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-card h2 {
+            margin: 0 0 16px;
+            font-size: clamp(12px, 1.3vw, 16px);
+            color: #fff;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 12px;
+        }
+
+        /* STATS GRID */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .admin-stat {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 234, 0.3);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .admin-stat .value {
+            font-size: clamp(18px, 2vw, 28px);
+            color: var(--accent);
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .admin-stat .label {
+            font-size: clamp(6px, 0.7vw, 8px);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* TABLE */
+        .admin-table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border-line);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: clamp(7px, 0.75vw, 9px);
+            min-width: 600px;
+        }
+
+        .admin-table th {
+            background: rgba(0, 255, 234, 0.08);
+            border-bottom: 1px solid var(--border-line);
+            padding: 12px 8px;
+            text-align: left;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .admin-table td {
+            padding: 10px 8px;
+            border-bottom: 1px dashed rgba(0, 255, 234, 0.15);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .admin-table tr:hover {
+            background: rgba(0, 255, 234, 0.05);
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* BADGE */
+        .admin-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: clamp(6px, 0.65vw, 7px);
+            border: 1px solid transparent;
+        }
+
+        .admin-badge.active {
+            background: rgba(0, 255, 114, 0.15);
+            color: var(--success);
+            border-color: rgba(0, 255, 114, 0.4);
+        }
+
+        .admin-badge.banned {
+            background: rgba(255, 91, 110, 0.15);
+            color: var(--danger);
+            border-color: rgba(255, 91, 110, 0.4);
+        }
+
+        .admin-badge.open {
+            background: rgba(255, 204, 0, 0.15);
+            color: var(--warning);
+            border-color: rgba(255, 204, 0, 0.4);
+        }
+
+        .admin-badge.analyzing {
+            background: rgba(100, 200, 255, 0.15);
+            color: #64c8ff;
+            border-color: rgba(100, 200, 255, 0.4);
+        }
+
+        .admin-badge.resolved {
+            background: rgba(0, 255, 114, 0.15);
+            color: var(--success);
+            border-color: rgba(0, 255, 114, 0.4);
+        }
+
+        /* MODAL */
+        .admin-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .admin-modal.open {
+            display: flex;
+        }
+
+        .admin-modal-box {
+            width: min(100%, 500px);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--border-line);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 0 50px rgba(0, 255, 234, 0.2);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .admin-modal-box h3 {
+            margin: 0 0 16px;
+            font-size: clamp(12px, 1.2vw, 16px);
+            color: #fff;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 12px;
+        }
+
+        .admin-modal-box .modal-body {
+            font-size: clamp(7px, 0.8vw, 9px);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .admin-modal-box .modal-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        /* FORMS */
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .admin-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .admin-form-group label {
+            font-size: clamp(7px, 0.75vw, 9px);
+            color: rgba(0, 255, 234, 0.9);
+            letter-spacing: 0.5px;
+        }
+
+        .admin-form-group input,
+        .admin-form-group select,
+        .admin-form-group textarea {
+            padding: 10px 12px;
+            border: 1.5px solid var(--border-line);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(7px, 0.75vw, 9px);
+            transition: all 0.25s ease;
+        }
+
+        .admin-form-group input:focus,
+        .admin-form-group select:focus,
+        .admin-form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 16px rgba(0, 255, 234, 0.2);
+        }
+
+        /* TOOLBAR */
+        .admin-toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .admin-toolbar input {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px 12px;
+            border: 1.5px solid var(--border-line);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(7px, 0.75vw, 9px);
+        }
+
+        .admin-toolbar input::placeholder {
+            color: rgba(0, 255, 234, 0.5);
+        }
+
+        /* PAGINATION */
+        .admin-pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .admin-pagination button {
+            padding: 8px 12px;
+            border: 1px solid var(--border-line);
+            background: rgba(0, 0, 0, 0.6);
+            color: var(--accent);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(6px, 0.6vw, 7px);
+            transition: all 0.25s ease;
+        }
+
+        .admin-pagination button:hover,
+        .admin-pagination button.active {
+            background: rgba(0, 255, 234, 0.15);
+            border-color: var(--accent);
+        }
+
+        .admin-pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* TOAST */
+        .admin-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--border-line);
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-size: clamp(7px, 0.75vw, 9px);
+            color: var(--accent);
+            max-width: 300px;
+            z-index: 3000;
+            animation: slideInRight 0.4s ease-out;
+            box-shadow: 0 0 30px rgba(0, 255, 234, 0.2);
+        }
+
+        .admin-toast.error {
+            border-color: rgba(255, 91, 110, 0.5);
+            color: var(--danger);
+        }
+
+        .admin-toast.success {
+            border-color: rgba(0, 255, 114, 0.5);
+            color: var(--success);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* HIDDEN SECTIONS */
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .admin-sidebar {
+                width: var(--sidebar-w);
+            }
+            .admin-content {
+                margin-left: calc(var(--sidebar-w) + var(--sidebar-gap));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                width: clamp(140px, 12vw, 180px);
+            }
+            .admin-content {
+                margin-left: calc(var(--sidebar-w) + 16px);
+                padding: clamp(12px, 1.5vw, 20px);
+            }
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .admin-stats {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .admin-sidebar {
+                width: clamp(100px, 10vw, 140px);
+            }
+            .admin-content {
+                margin-left: calc(var(--sidebar-w) + 12px);
+            }
+            .admin-nav-item {
+                padding: 10px 10px;
+                font-size: 6px;
+            }
+            .admin-header h1 {
+                font-size: clamp(12px, 1.5vw, 16px);
+            }
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-shell">
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo-box">
+                <img src="Images/TheGods Studio - LOGO.png" alt="Logo">
+            </div>
+            <div class="admin-brand">PAINEL ADMIN</div>
+            <nav class="admin-nav">
+                <button class="admin-nav-item active" data-section="dashboard">Dashboard</button>
+                <button class="admin-nav-item" data-section="users">Usuários</button>
+                <button class="admin-nav-item" data-section="reports">Denúncias</button>
+                <button class="admin-nav-item" data-section="bans">Banimentos</button>
+                <button class="admin-nav-item" data-section="administrators">Admin.</button>
+                <button class="admin-nav-item" data-section="audit-logs">Logs</button>
+                <button class="admin-nav-item" data-section="settings">Config.</button>
+            </nav>
+            <div class="admin-logout">
+                <button id="logout-btn">Sair</button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="admin-content">
+            <!-- HEADER -->
+            <div class="admin-header">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="admin-user-info">
+                    <div class="admin-user-chip">
+                        <span class="username" id="current-user">@admin</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD SECTION -->
+            <div class="admin-section active" id="dashboard-section">
+                <div class="admin-card">
+                    <h2>Estatísticas do Sistema</h2>
+                    <div class="admin-stats" id="dashboard-stats"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h2>Atividades Recentes</h2>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Ação</th>
+                                    <th>Usuário Alvo</th>
+                                    <th>Detalhes</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-logs"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- USERS SECTION -->
+            <div class="admin-section" id="users-section">
+                <div class="admin-card">
+                    <h2>Gerenciar Usuários</h2>
+                    <div class="admin-toolbar">
+                        <input type="text" id="users-search" placeholder="Buscar usuário...">
+                        <select id="users-filter" style="flex: 0.5; min-width: 100px;">
+                            <option value="">Todos</option>
+                            <option value="active">Ativos</option>
+                            <option value="banned">Banidos</option>
+                            <option value="admins">Administradores</option>
+                        </select>
+                        <button class="admin-btn primary" id="search-users-btn">Pesquisar</button>
+                    </div>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Cargos</th>
+                                    <th>Criado</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table"></tbody>
+                        </table>
+                    </div>
+                    <div class="admin-pagination" id="users-pagination"></div>
+                </div>
+            </div>
+
+            <!-- REPORTS SECTION -->
+            <div class="admin-section" id="reports-section">
+                <div class="admin-card">
+                    <h2>Gerenciar Denúncias</h2>
+                    <div class="admin-toolbar">
+                        <input type="text" id="reports-search" placeholder="Buscar denúncia...">
+                        <select id="reports-filter" style="flex: 0.5; min-width: 100px;">
+                            <option value="">Todos</option>
+                            <option value="open">Abertos</option>
+                            <option value="analyzing">Analisando</option>
+                            <option value="resolved">Resolvidos</option>
+                        </select>
+                        <button class="admin-btn primary" id="search-reports-btn">Filtrar</button>
+                    </div>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Reportante</th>
+                                    <th>Categoria</th>
+                                    <th>Status</th>
+                                    <th>Prioridade</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-table"></tbody>
+                        </table>
+                    </div>
+                    <div class="admin-pagination" id="reports-pagination"></div>
+                </div>
+            </div>
+
+            <!-- BANS SECTION -->
+            <div class="admin-section" id="bans-section">
+                <div class="admin-card">
+                    <h2>Gerenciar Banimentos</h2>
+                    <button class="admin-btn success" id="new-ban-btn">+ Novo Banimento</button>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Motivo</th>
+                                    <th>Tipo</th>
+                                    <th>Data Fim</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bans-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMINISTRATORS SECTION -->
+            <div class="admin-section" id="administrators-section">
+                <div class="admin-card">
+                    <h2>Gerenciar Administradores</h2>
+                    <button class="admin-btn success" id="new-admin-btn">+ Tornar Admin</button>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Email</th>
+                                    <th>Cargo</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="administrators-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AUDIT LOGS SECTION -->
+            <div class="admin-section" id="audit-logs-section">
+                <div class="admin-card">
+                    <h2>Logs de Auditoria</h2>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Ação</th>
+                                    <th>Admin</th>
+                                    <th>Alvo</th>
+                                    <th>Detalhes</th>
+                                    <th>IP</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="audit-logs-table"></tbody>
+                        </table>
+                    </div>
+                    <div class="admin-pagination" id="audit-logs-pagination"></div>
+                </div>
+            </div>
+
+            <!-- SETTINGS SECTION -->
+            <div class="admin-section" id="settings-section">
+                <div class="admin-card">
+                    <h2>Configurações do Painel</h2>
+                    <div class="admin-form">
+                        <div class="admin-form-group">
+                            <label>Versão do Painel</label>
+                            <input type="text" value="1.0.0" disabled>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Google Auth</label>
+                            <input type="text" id="settings-google" disabled>
+                        </div>
+                        <button class="admin-btn primary">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL -->
+    <div class="admin-modal" id="admin-modal">
+        <div class="admin-modal-box">
+            <h3 id="modal-title">Detalhes</h3>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-actions" id="modal-actions"></div>
+        </div>
+    </div>
+
+    <script src="admin-new.js"></script>
+</body>
+    <script src="site-theme.js"></script>
+</html>
