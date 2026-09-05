@@ -751,3 +751,18 @@
         min-width: 0;
     }
 }
+
+/* Fonte padrão da página de configuração */
+.page-shell,
+.page-shell *,
+.config-card,
+.config-card *,
+.config-header,
+.config-header *,
+.btn-mini,
+input,
+select,
+textarea,
+button {
+    font-family: 'Press Start 2P', cursive;
+}
