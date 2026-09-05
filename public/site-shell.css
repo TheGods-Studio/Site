@@ -587,3 +587,146 @@
     width: 220px;
   }
 }
+
+/* ==========================================================================
+   LOJA
+   ========================================================================== */
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: clamp(18px, 2vw, 30px);
+    width: 100%;
+}
+
+.shop-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+
+    padding: clamp(20px, 2.2vw, 30px);
+
+    background: var(--theme-bg-box);
+
+    border: 2px solid rgba(0, 255, 234, 0.5);
+    border-radius: 10px;
+
+    text-align: center;
+
+    transition: all 0.3s ease;
+}
+
+.shop-card:hover {
+    transform: translateY(-6px);
+
+    border-color: var(--theme-cyan);
+
+    box-shadow:
+        0 0 40px rgba(0, 255, 234, 0.22),
+        inset 0 0 30px rgba(0, 255, 234, 0.06);
+}
+
+.shop-badge {
+    display: inline-block;
+
+    margin-bottom: 12px;
+
+    padding: 4px 9px;
+
+    border: 1px solid var(--theme-cyan);
+    border-radius: 5px;
+
+    color: var(--theme-cyan);
+
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(6px, 0.65vw, 8px);
+
+    line-height: 1.4;
+}
+
+.shop-card h3 {
+    margin: 0 0 14px;
+
+    color: #fff;
+
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(10px, 1.15vw, 14px);
+
+    line-height: 1.6;
+}
+
+.shop-card p {
+    margin: 0;
+
+    color: rgba(0, 255, 234, 0.85);
+
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(7px, 0.8vw, 10px);
+
+    line-height: 2;
+
+    letter-spacing: 0.2px;
+}
+
+.shop-price {
+    margin-bottom: 12px;
+
+    color: var(--theme-cyan);
+
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(11px, 1.3vw, 16px);
+
+    line-height: 1.5;
+
+    text-shadow:
+        0 0 14px rgba(0, 255, 234, 0.35);
+}
+
+.shop-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 38px;
+
+    padding: 9px 16px;
+
+    border: 1px solid transparent;
+    border-radius: 7px;
+
+    background: linear-gradient(
+        135deg,
+        var(--theme-cyan),
+        #00c8b4
+    );
+
+    color: #001313;
+
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(7px, 0.7vw, 10px);
+
+    line-height: 1.5;
+
+    text-decoration: none;
+
+    transition: all 0.25s ease;
+}
+
+.shop-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 0 22px rgba(0, 255, 234, 0.35);
+}
+
+@media (max-width: 640px) {
+    .shop-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .shop-card {
+        gap: 20px;
+    }
+}
