@@ -44,6 +44,8 @@ body {
 }
 
 .admin-shell {
+  position: relative;
+  z-index: 2;
   width: 100%;
   height: 100%;
   display: flex;
@@ -127,7 +129,8 @@ body {
   color: rgba(0, 255, 234, 0.8);
   border-left: 3px solid transparent;
   border-radius: 8px;
-  font-size: clamp(6.5px, 0.65vw, 9px);
+  font-size: clamp(8px, 0.85vw, 12px);
+  line-height: 1.6;
   transition: all 0.25s ease;
   cursor: pointer;
   background: transparent;
@@ -171,6 +174,8 @@ body {
 
 /* === CONTEÚDO PRINCIPAL === */
 .admin-content {
+  position: relative;
+  z-index: 2;
   flex: 1;
   margin-left: calc(var(--sidebar-w) + var(--sidebar-gap));
   padding: clamp(16px, 2.5vw, 32px);
@@ -215,7 +220,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: clamp(7px, 0.75vw, 9px);
+  font-size: clamp(8px, 0.8vw, 11px);
 }
 
 .admin-user-chip {
@@ -240,7 +245,8 @@ body {
   text-decoration: none;
   cursor: pointer;
   font-family: 'Press Start 2P', cursive;
-  font-size: clamp(6px, 0.6vw, 8px);
+  font-size: clamp(7px, 0.7vw, 10px);
+  line-height: 1.6;
   transition: all 0.25s ease;
   white-space: nowrap;
 }
@@ -274,6 +280,7 @@ body {
   background: rgba(0, 255, 114, 0.12);
   border-color: rgba(0, 255, 114, 0.5);
   color: var(--success);
+  margin-bottom: 10px;
 }
 .admin-btn.success:hover {
   box-shadow: 0 0 20px rgba(0, 255, 114, 0.3);
@@ -290,7 +297,7 @@ body {
 
 /* CARDS E PAINÉIS */
 .admin-card {
-  background: rgba(0, 0, 0, 0.72);
+  background: rgba(0, 0, 0, 0.94);
   border: 2px solid var(--border-line);
   border-radius: 12px;
   padding: clamp(16px, 2vw, 28px);
@@ -315,7 +322,7 @@ body {
 }
 
 .admin-stat {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.88);
   border: 1px solid rgba(0, 255, 234, 0.3);
   border-radius: 10px;
   padding: 14px;
@@ -344,7 +351,8 @@ body {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: clamp(7px, 0.75vw, 9px);
+  font-size: clamp(8px, 0.8vw, 10px);
+  line-height: 1.7;
   min-width: 600px;
 }
 
@@ -474,7 +482,8 @@ body {
 }
 
 .admin-form-group label {
-  font-size: clamp(7px, 0.75vw, 9px);
+  font-size: clamp(8px, 0.8vw, 10px);
+  line-height: 1.6;
   color: rgba(0, 255, 234, 0.9);
   letter-spacing: 0.5px;
 }
@@ -485,10 +494,11 @@ body {
   padding: 10px 12px;
   border: 1.5px solid var(--border-line);
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.88);
   color: #fff;
   font-family: 'Press Start 2P', cursive;
-  font-size: clamp(7px, 0.75vw, 9px);
+  font-size: clamp(8px, 0.8vw, 10px);
+  line-height: 1.6;
   transition: all 0.25s ease;
 }
 
@@ -515,7 +525,7 @@ body {
   padding: 10px 12px;
   border: 1.5px solid var(--border-line);
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.88);
   color: #fff;
   font-family: 'Press Start 2P', cursive;
   font-size: clamp(7px, 0.75vw, 9px);
@@ -537,7 +547,7 @@ body {
 .admin-pagination button {
   padding: 8px 12px;
   border: 1px solid var(--border-line);
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.88);
   color: var(--accent);
   border-radius: 6px;
   cursor: pointer;
