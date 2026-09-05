@@ -5,30 +5,30 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>The Gods - Contato</title>
         <link rel="icon" type="image/png" href="Images/TheGods Studio - LOGO.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+        
+        <!-- ESTILOS PADRONIZADOS -->
         <link rel="stylesheet" href="auth.css">
         <link rel="stylesheet" href="site-theme.css">
-        <style>
-            * { box-sizing: border-box; }
-            body {
-                margin: 0; min-height: 100vh; overflow-x: hidden;
-                background: linear-gradient(135deg, #000000 0%, #005757 50%, #00a58f 100%);
-                background-size: 300% 300%; animation: gradientShift 18s ease infinite;
-                display: flex; align-items: center; justify-content: center; padding: 24px;
-            }
-            @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-            .auth-card { text-align: center; }
-            .auth-title { font-size: clamp(16px, 3vw, 26px); }
-            .auth-switch a { color: #fff; }
-        </style>
     </head>
     <body>
+        <canvas id="matrix-canvas"></canvas>
+
         <div class="auth-wrap">
             <div class="auth-card">
                 <h1 class="auth-title">CONTATO</h1>
-                <p class="auth-switch">Fale com a The Gods Studio: contato@thegods.studio<br><br><a href="index.html">← Voltar ao início</a></p>
+                <p class="auth-switch">
+                    Fale com a The Gods Studio:<br><br>
+                    <strong style="color: var(--theme-cyan, #00ffea);">contato@thegods.studio</strong>
+                    <br><br>
+                    <a href="index.html">← Voltar ao início</a>
+                </p>
             </div>
         </div>
+
         <script src="site-theme.js"></script>
+        <script src="auth.js"></script>
     </body>
 </html>

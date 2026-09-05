@@ -1,4 +1,6 @@
 /* Shared The Gods Studio visual theme */
+@import url('./site-shell.css');
+
 :root {
   --theme-cyan: rgb(0, 255, 234);
   --theme-sidebar-width: clamp(180px, 14vw, 240px);

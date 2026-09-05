@@ -2231,10 +2231,10 @@ if (DB_SYNC_TOKEN) {
   });
 }
 
-app.get('/admin', (req, res) => {
+app.get(['/admin', '/admin.html'], (req, res) => {
   const u = getUserFromReq(req);
   if (!u) return res.redirect('/login.html?next=' + encodeURIComponent('/admin'));
-  if (!isAdminUser(u.id)) return res.status(403).send('Acesso negado: você não possui acesso administrativo.');
+  if (!isAdminUser(u.id)) return res.status(403).sendFile(path.join(PUBLIC_DIR, 'acesso-negado.html'));
   res.sendFile(path.join(PUBLIC_DIR, 'admin-new.html'));
 });
 
