@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>The Gods - Aplicativos</title>
+        <link rel="icon" type="image/png" href="Images/TheGods Studio - LOGO.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="auth.css">
+        <link rel="stylesheet" href="site-theme.css">
+        <style>
+            .app-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(128px, 160px));
+                gap: clamp(14px, 1.8vw, 24px);
+                width: 100%;
+                max-width: 1000px;
+                justify-content: center;
+                position: relative;
+                z-index: 2;
+            }
+            .app-item {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .app-btn {
+                width: clamp(96px, 10vw, 140px);
+                height: clamp(96px, 10vw, 140px);
+                object-fit: cover;
+                border: clamp(2px, 0.3vw, 3px) solid rgba(0, 255, 234, 0.5);
+                border-radius: clamp(8px, 1vw, 12px);
+                background: rgba(0, 0, 0, 0.7);
+                cursor: pointer;
+                transition: all 0.35s ease;
+                padding: 0;
+                display: block;
+            }
+            .app-btn-link {
+                display: block;
+                border-radius: clamp(8px, 1vw, 12px);
+            }
+            .app-btn-link:focus-visible {
+                outline: 2px solid #fff;
+                outline-offset: 5px;
+            }
+            .app-btn:hover {
+                transform: translateY(-6px) scale(1.02);
+                border-color: rgb(0, 255, 234);
+                box-shadow: 0 0 50px rgba(0, 255, 234, 0.25), inset 0 0 40px rgba(0, 255, 234, 0.08);
+            }
+            .app-tooltip {
+                position: absolute;
+                left: calc(100% + 16px);
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(0, 0, 0, 0.95);
+                border: clamp(2px, 0.3vw, 3px) solid rgb(0, 255, 234);
+                border-radius: clamp(8px, 1vw, 12px);
+                padding: clamp(14px, 1.6vw, 20px);
+                width: 240px;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+                z-index: 100;
+                box-shadow: 0 0 30px rgba(0, 255, 234, 0.2);
+            }
+            .app-item:hover .app-tooltip {
+                opacity: 1;
+            }
+            .app-tooltip strong {
+                font-family: 'Press Start 2P', cursive;
+                font-size: clamp(9px, 1vw, 12px);
+                color: #fff;
+                font-weight: 700;
+                text-shadow: 0 0 14px rgba(0, 255, 234, 0.4);
+                display: block;
+                margin-bottom: 10px;
+                line-height: 1.5;
+            }
+            .app-tooltip p {
+                font-family: 'Press Start 2P', cursive;
+                font-size: clamp(7px, 0.8vw, 9px);
+                color: rgba(0, 255, 234, 0.85);
+                line-height: 2;
+                margin: 0;
+                letter-spacing: 0.5px;
+            }
+            @media (max-width: 640px) {
+                .app-tooltip {
+                    left: 50% !important;
+                    top: calc(100% + 12px) !important;
+                    transform: translateX(-50%) translateY(0) !important;
+                    width: 200px !important;
+                }
+            }
+
+            /* Estrutura visual alinhada ao shop.html */
+            .page-shell {
+                width: 100%;
+                max-width: 1280px;
+                min-height: 100vh;
+                margin: 0 auto;
+                padding: clamp(8px, 2vw, 16px) clamp(10px, 2.5vw, 20px) clamp(24px, 4vw, 40px);
+                padding-top: 0;
+                padding-left: clamp(180px, 20vw, 280px);
+                padding-right: clamp(10px, 2vw, 20px);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+            }
+            .site-header {
+                position: relative;
+                z-index: 3;
+                width: 100%;
+                padding: clamp(10px, 1.5vw, 16px) clamp(10px, 2.5vw, 20px) clamp(4px, 1vw, 8px);
+                padding-left: calc(var(--sidebar-w, 220px) + var(--sidebar-gap, 24px));
+                text-align: center;
+            }
+            .site-header .content-box { margin: 0 auto; }
+            .content-box {
+                max-width: 90%;
+                align-self: center;
+                margin-top: 0;
+                padding: clamp(8px, 1vw, 16px);
+                background: rgba(0, 0, 0, 0.7);
+                border: clamp(2px, 0.35vw, 3px) solid rgb(0, 255, 234);
+                border-radius: clamp(6px, 0.8vw, 8px);
+                animation: fadeInUp 0.8s ease-out;
+            }
+            .title {
+                margin: 0;
+                padding: clamp(10px, 2vw, 20px);
+                font-family: 'Press Start 2P', cursive;
+                color: rgb(0, 255, 234);
+                text-align: center;
+                text-shadow: 1px 8px 5px rgba(0, 0, 0, 1);
+                font-size: clamp(14px, 2.2vw, 24px);
+                line-height: 1.4;
+            }
+            .content-box .title {
+                background: linear-gradient(90deg, rgb(0, 255, 234), rgb(0, 200, 180), rgb(0, 255, 234));
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                display: inline-block;
+                min-width: 200px;
+            }
+            .divider-section {
+                position: relative;
+                z-index: 2;
+                width: 100%;
+                margin: clamp(30px, 5vw, 60px) auto 0;
+                display: flex;
+                align-items: center;
+                gap: clamp(16px, 2vw, 32px);
+            }
+            .divider-line {
+                flex: 1;
+                height: 3px;
+                background: linear-gradient(90deg, transparent, rgba(0, 255, 234, 0.25), rgba(0, 255, 234, 0.5), rgba(0, 255, 234, 0.25), transparent);
+            }
+            .divider-text {
+                flex-shrink: 0;
+                padding: 0 clamp(12px, 1.5vw, 24px);
+                color: rgb(0, 255, 234);
+                font-family: 'Press Start 2P', cursive;
+                font-size: clamp(14px, 1.3vw, 24px);
+                line-height: 1.4;
+                text-align: center;
+                white-space: nowrap;
+            }
+            .sidebar {
+                width: clamp(180px, 14vw, 240px);
+                top: clamp(8px, 1.2vw, 12px);
+                left: clamp(1px, calc(1.2vw + 10px), 2px);
+                bottom: clamp(8px, 1.2vw, 12px);
+                padding: 12px 0;
+                background: rgba(0, 0, 0, 0.85);
+                border-radius: 12px;
+            }
+            .sidebar .logo-sidebar {
+                width: clamp(120px, 12vw, 160px);
+                height: clamp(120px, 12vw, 160px);
+                margin: 0 auto 12px;
+            }
+            .sidebar a {
+                padding: 12px 20px;
+                font-size: clamp(9px, 0.9vw, 13px);
+            }
+            .sidebar a:hover,
+            .sidebar a.active { padding-left: 32px; }
+            @media (max-width: 768px) {
+                .page-shell { padding-left: clamp(120px, 15vw, 170px); padding-top: 0; }
+            }
+            @media (max-width: 640px) {
+                .page-shell { padding-left: clamp(90px, 12vw, 130px) !important; padding-top: 0 !important; }
+                .sidebar { width: clamp(80px, 12vw, 120px) !important; top: clamp(50px, 7vw, 70px) !important; }
+                .sidebar .logo-sidebar { width: clamp(45px, 5.5vw, 60px) !important; height: clamp(45px, 5.5vw, 60px) !important; }
+                .sidebar a { font-size: 6.5px !important; padding: 5px 8px !important; }
+                .divider-text { font-size: clamp(8px, 2.2vw, 12px); white-space: normal; }
+            }
+            @media (max-width: 480px) {
+                .page-shell { padding-left: 8px !important; padding-top: 0 !important; }
+                .sidebar { width: clamp(55px, 9vw, 80px) !important; top: clamp(40px, 6vw, 55px) !important; }
+                .sidebar .logo-sidebar { width: clamp(32px, 4.5vw, 45px) !important; height: clamp(32px, 4.5vw, 45px) !important; }
+                .sidebar a { font-size: 5.5px !important; padding: 4px 6px !important; }
+                .divider-text { font-size: clamp(7px, 1.8vw, 10px); }
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="matrix-canvas"></canvas>
+
+        <div class="top-buttons">
+            <a href="signup.html" class="btn btn-outline">Criar conta</a>
+            <a href="login.html" class="btn btn-primary">Entrar</a>
+        </div>
+
+        <div class="sidebar">
+            <img src="Images/TheGods Studio - LOGO.png" alt="Logo" class="logo-sidebar">
+            <a href="index.html">
+                <span class="icon"></span>
+                Inicio
+            </a>
+            <a href="aplicativos.html" class="active">
+                <span class="icon"></span>
+                <span class="lock-icon"></span>Aplicativos
+            </a>
+            <a href="shop.html">
+                <span class="icon"></span>
+                Loja
+            </a>
+            <a href="contato.html">
+                <span class="icon"></span>
+                <span class="lock-icon"></span>Contato
+            </a>
+            <a href="/admin" data-admin-link="true" style="display:none;">
+                <span class="icon"></span>
+                <span class="lock-icon"></span>Admin
+            </a>
+            <a href="config.html" id="settings-btn" hidden aria-label="Configurações da Conta">
+                Configurações
+            </a>
+        </div>
+
+        <div class="page-shell">
+            <div class="content-box">
+                <h1 class="title">
+                    <div><span id="typed-title"></span><span class="cursor" id="cursor-title"></span></div>
+                    <div><span id="typed-subtitle" style="font-size: 0.5em; opacity: 0.8; color: rgb(0, 255, 234); font-family: 'Press Start 2P', cursive;"></span><span class="cursor" id="cursor-subtitle"></span></div>
+                </h1>
+            </div>
+
+            <div class="divider-section">
+                <div class="divider-line"></div>
+                <span class="divider-text">Hacking/CyberSecurity - Programming</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <div class="section-content">
+                <div class="app-grid">
+                    <div class="app-item">
+                        <a href="GodsTech-Gen.html" class="app-btn-link" aria-label="Abrir GodsTech Gen">
+                            <img src="Images/TheGods Studio - LOGO.png" alt="Abrir GodsTech Gen" class="app-btn">
+                        </a>
+                        <div class="app-tooltip">
+                            <strong>GØD$ T€©H • G£Ñ</strong>
+                            <p>Uma plataforma completa de CyberSecurity e Hacking, reunindo recursos versáteis, interface intuitiva e desempenho otimizado para estudos e operacoes autorizadas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function() {
+                const titlePhrases = ['The Gods Studio'];
+                const subtitlePhrases = ['Aplicativos/Programas'];
+                const typedTitle = document.getElementById('typed-title');
+                const typedSubtitle = document.getElementById('typed-subtitle');
+                const cursorTitle = document.getElementById('cursor-title');
+                const cursorSubtitle = document.getElementById('cursor-subtitle');
+                let titleIndex = 0;
+                let subtitleIndex = 0;
+                let titleCharIndex = 0;
+                let subtitleCharIndex = 0;
+                let phase = 0;
+                let errorMode = false;
+                let errorCharIndex = 0;
+                let errorPhrase = '';
+                let hesitating = false;
+                let hesitationCount = 0;
+                let timeout;
+                const typingSpeed = 70;
+                const deleteSpeed = 35;
+                const pauseDelay = 1500;
+                const hesitationDelay = 200;
+                function updateCursors() {
+                    cursorTitle.style.display = 'none';
+                    cursorSubtitle.style.display = 'none';
+                    if (phase === 0 || phase === 4) {
+                        cursorTitle.style.display = 'inline-block';
+                        cursorSubtitle.style.display = 'none';
+                    } else if (phase === 1 || phase === 2 || phase === 3) {
+                        cursorTitle.style.display = 'none';
+                        cursorSubtitle.style.display = 'inline-block';
+                    }
+                }
+                function type() {
+                    const currentTitle = titlePhrases[titleIndex];
+                    const currentSubtitle = subtitlePhrases[subtitleIndex];
+                    updateCursors();
+                    if (phase === 0) {
+                        if (titleCharIndex < currentTitle.length) {
+                            if (!hesitating && Math.random() < 0.05 && titleCharIndex > 5) {
+                                hesitating = true;
+                                hesitationCount = Math.floor(Math.random() * 3) + 1;
+                                for (let i = 0; i < hesitationCount && titleCharIndex > 0; i--) {
+                                    titleCharIndex--;
+                                }
+                                typedTitle.textContent = currentTitle.substring(0, titleCharIndex);
+                                timeout = setTimeout(type, deleteSpeed + 50);
+                                return;
+                            }
+                            if (hesitating && titleCharIndex < currentTitle.length) {
+                                hesitating = false;
+                            }
+                            if (Math.random() < 0.08 && titleCharIndex > 2 && !errorMode) {
+                                errorMode = true;
+                                const wrongChar = String.fromCharCode(33 + Math.random() * 94);
+                                typedTitle.textContent = currentTitle.substring(0, titleCharIndex) + wrongChar;
+                                errorCharIndex = titleCharIndex;
+                                timeout = setTimeout(type, typingSpeed + 150);
+                                return;
+                            }
+                            if (errorMode && errorCharIndex < currentTitle.length) {
+                                if (errorCharIndex < titleCharIndex + 1) {
+                                    typedTitle.textContent = currentTitle.substring(0, errorCharIndex + 1);
+                                    errorCharIndex++;
+                                    timeout = setTimeout(type, typingSpeed + 50);
+                                    return;
+                                }
+                                errorMode = false;
+                            }
+                            typedTitle.textContent = currentTitle.substring(0, titleCharIndex + 1);
+                            titleCharIndex++;
+                            timeout = setTimeout(type, typingSpeed + Math.random() * 50);
+                        } else {
+                            phase = 1;
+                            timeout = setTimeout(type, 400);
+                        }
+                    } else if (phase === 1) {
+                        if (subtitleCharIndex < currentSubtitle.length) {
+                            if (!hesitating && Math.random() < 0.06 && subtitleCharIndex > 5) {
+                                hesitating = true;
+                                hesitationCount = Math.floor(Math.random() * 2) + 1;
+                                for (let i = 0; i < hesitationCount && subtitleCharIndex > 0; i--) {
+                                    subtitleCharIndex--;
+                                }
+                                typedSubtitle.textContent = currentSubtitle.substring(0, subtitleCharIndex);
+                                timeout = setTimeout(type, deleteSpeed + 50);
+                                return;
+                            }
+                            if (hesitating) {
+                                hesitating = false;
+                            }
+                            if (Math.random() < 0.10 && subtitleCharIndex > 2 && !errorMode) {
+                                errorMode = true;
+                                const wrongChar = String.fromCharCode(33 + Math.random() * 94);
+                                typedSubtitle.textContent = currentSubtitle.substring(0, subtitleCharIndex) + wrongChar;
+                                errorCharIndex = subtitleCharIndex;
+                                timeout = setTimeout(type, typingSpeed + 150);
+                                return;
+                            }
+                            if (errorMode && errorCharIndex < currentSubtitle.length) {
+                                if (errorCharIndex < subtitleCharIndex + 1) {
+                                    typedSubtitle.textContent = currentSubtitle.substring(0, errorCharIndex + 1);
+                                    errorCharIndex++;
+                                    timeout = setTimeout(type, typingSpeed + 50);
+                                    return;
+                                }
+                                errorMode = false;
+                            }
+                            typedSubtitle.textContent = currentSubtitle.substring(0, subtitleCharIndex + 1);
+                            subtitleCharIndex++;
+                            timeout = setTimeout(type, typingSpeed + Math.random() * 50);
+                        } else {
+                            phase = 2;
+                            timeout = setTimeout(type, pauseDelay);
+                        }
+                    } else if (phase === 2) {
+                        phase = 3;
+                        timeout = setTimeout(type, 200);
+                    } else if (phase === 3) {
+                        if (subtitleCharIndex > 0) {
+                            typedSubtitle.textContent = currentSubtitle.substring(0, subtitleCharIndex - 1);
+                            subtitleCharIndex--;
+                            timeout = setTimeout(type, deleteSpeed + Math.random() * 30);
+                        } else {
+                            phase = 4;
+                            timeout = setTimeout(type, 200);
+                        }
+                    } else if (phase === 4) {
+                        if (titleCharIndex > 0) {
+                            typedTitle.textContent = currentTitle.substring(0, titleCharIndex - 1);
+                            titleCharIndex--;
+                            timeout = setTimeout(type, deleteSpeed + Math.random() * 30);
+                        } else {
+                            titleIndex = (titleIndex + 1) % titlePhrases.length;
+                            subtitleIndex = (subtitleIndex + 1) % subtitlePhrases.length;
+                            titleCharIndex = 0;
+                            subtitleCharIndex = 0;
+                            errorMode = false;
+                            hesitating = false;
+                            phase = 0;
+                            timeout = setTimeout(type, 400);
+                        }
+                    }
+                }
+                setTimeout(type, 500);
+            })();
+        </script>
+        <script>
+            (function() {
+                const canvas = document.getElementById('matrix-canvas');
+                const ctx = canvas.getContext('2d');
+                let width = window.innerWidth;
+                let height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                const characterSets = [
+                    '01',
+                    'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン',
+                    '的一是不了人在我有他这个们中来上大为和国地到以说时要就出会可也你对生能而子那得于着下自之过家学里小多然心行天法都现主没么去成只如事把样变回看种她同工向机王正反物特老从明己问长斯外给当见两并关重应性报林名规之千文将件表战果六农决命组军流结各百天信运安证府报权性现别真题阶水少书代合她场',
+                    '가나다라마바사아자차카타파하거너더러머버서어저처커터퍼허겨녀려며벼셔여져쳐켜텨펴혜계례몌폐셰예체례해개내대래매배새애재캐태패해갠낸댄랜맨뱬샌앤잰캔탠팬헨겔넬델렐멜벨셀엘젤켈텔펠헬',
+                    'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя',
+                    'ᏆᏇᏈᏉᏊᏋᏌᏍᏎᏏᏐᏑᏒᏓᏔᏕᏖᏗᏘᏙᏚᏛᏜᏝᏞᏟᏠᏡᏢᏣᏤᏥᏦᏧᏨᏩᏪᏫᏬᏭᏮᏯᏰᏱᏲᏳᏴ',
+                    'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψω',
+                    '!@#$%^&*()_+-=[]{}|;:,.<>?/~`',
+                    '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+                    'אבגדהוזחטיכלמנסעפצקרשת'
+                ];
+                const allChars = characterSets.join('');
+                const charsArray = allChars.split('');
+                const fontSize = Math.max(14, Math.min(20, width / 60));
+                const columns = Math.floor(width / fontSize);
+                const drops = [];
+                for (let i = 0; i < columns; i++) {
+                    drops[i] = Math.floor(Math.random() * -100);
+                }
+                const baseCyan = { r: 0, g: 255, b: 234 };
+                let frameCount = 0;
+                let resetTimer = 0;
+                function draw() {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.035)';
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.textAlign = 'center';
+                    for (let i = 0; i < drops.length; i++) {
+                        const char = charsArray[Math.floor(Math.random() * charsArray.length)];
+                        const brightness = Math.random() * 0.3 + 0.7;
+                        const r = Math.floor(baseCyan.r * 0.2);
+                        const g = Math.floor(baseCyan.g * brightness);
+                        const b = Math.floor(baseCyan.b * brightness * 0.8);
+                        ctx.font = fontSize + 'px monospace';
+                        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                        const x = i * fontSize + fontSize / 2;
+                        const y = drops[i] * fontSize;
+                        if (y > 0 && Math.random() < 0.03) {
+                            const brightG = Math.min(255, baseCyan.g * 1.2);
+                            const brightB = Math.min(234, baseCyan.b * 1.1);
+                            ctx.fillStyle = `rgb(${Math.floor(baseCyan.r * 0.5)}, ${Math.floor(brightG)}, ${Math.floor(brightB)})`;
+                            ctx.shadowColor = `rgba(0, ${baseCyan.g}, ${baseCyan.b * 0.6}, 0.5)`;
+                            ctx.shadowBlur = 20;
+                        } else if (y > 0 && Math.random() < 0.08) {
+                            ctx.shadowColor = `rgba(0, ${baseCyan.g}, ${baseCyan.b * 0.4}, 0.15)`;
+                            ctx.shadowBlur = 8;
+                        } else {
+                            ctx.shadowBlur = 0;
+                        }
+                        ctx.fillText(char, x, y);
+                        ctx.shadowBlur = 0;
+                        drops[i]++;
+                        if (drops[i] * fontSize > height && Math.random() > 0.975) {
+                            drops[i] = Math.floor(Math.random() * -20);
+                        }
+                    }
+                    frameCount++;
+                    if (frameCount > 900) {
+                        frameCount = 0;
+                        for (let i = 0; i < drops.length; i++) {
+                            if (Math.random() < 0.1) {
+                                drops[i] = Math.floor(Math.random() * -100);
+                            }
+                        }
+                    }
+                    requestAnimationFrame(draw);
+                }
+                function resize() {
+                    width = window.innerWidth;
+                    height = window.innerHeight;
+                    canvas.width = width;
+                    canvas.height = height;
+                    const newFontSize = Math.max(14, Math.min(20, width / 60));
+                    const newColumns = Math.floor(width / newFontSize);
+                    if (newColumns !== columns) {
+                        while (drops.length < newColumns) {
+                            drops.push(Math.floor(Math.random() * -100));
+                        }
+                        while (drops.length > newColumns) {
+                            drops.pop();
+                        }
+                    }
+                }
+                window.addEventListener('resize', resize);
+                draw();
+            })();
+        </script>
+        <div class="toast" id="toast"></div>
+        <script src="site-theme.js"></script>
+        <script src="auth.js"></script>
+    </body>
+</html>

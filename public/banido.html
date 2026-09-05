@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Gods - Conta suspensa</title>
+    <link rel="icon" type="image/png" href="Images/TheGods Studio - LOGO.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site-theme.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: #000; color: #00ffea; font-family: 'Press Start 2P', cursive;
+            padding: 20px; text-align: center;
+        }
+        .card {
+            background: rgba(0,0,0,0.8); border: 2px solid #00ffea; border-radius: 12px;
+            padding: 40px; max-width: 600px; width: 100%;
+        }
+        h1 { font-size: clamp(14px, 2vw, 20px); margin-bottom: 20px; color: #fff; }
+        p { font-size: clamp(8px, 0.9vw, 11px); line-height: 1.8; color: #7fffe9; margin: 8px 0; }
+        .reason {
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(0,255,234,0.3);
+            border-radius: 8px; padding: 16px; margin: 20px 0;
+        }
+        .end { color: #fff; font-weight: bold; margin-top: 20px; }
+        a { color: #00ffea; font-family: 'Press Start 2P', cursive; font-size: 10px; text-decoration: none; }
+        a:hover { text-shadow: 0 0 12px rgba(0,255,234,0.6); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Conta Suspensa</h1>
+        <p>Sua conta foi suspensa por violação das regras.</p>
+        <div class="reason">
+            <p><strong>Motivo:</strong> <span id="ban-reason">Não especificado</span></p>
+            <p class="end"><strong>Término:</strong> <span id="ban-end">Permanente</span></p>
+        </div>
+        <p>Se acredita que isso é um erro, entre em contato conosco.</p>
+        <a href="index.html">← Voltar ao início</a>
+    </div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('ban-reason').textContent = params.get('reason') || 'Não especificado';
+        document.getElementById('ban-end').textContent = params.get('end') || 'Permanente';
+    </script>
+    <script src="site-theme.js"></script>
+</body>
+</html>

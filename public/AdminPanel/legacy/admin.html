@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Gods - Painel Administrativo</title>
+    <link rel="icon" type="image/png" href="../../Images/TheGods Studio - LOGO.png">
+    <link rel="stylesheet" href="../../site-theme.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="admin-shell">
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <img src="../../Images/TheGods Studio - LOGO.png" alt="Logo" class="logo-sidebar">
+            <div class="admin-brand">PAINEL ADMIN</div>
+            <nav class="admin-nav-list" id="admin-nav">
+                <a href="#" class="admin-nav active" data-page="dashboard">
+                    <span class="nav-icon">▸</span>Dashboard
+                </a>
+                <a href="#" class="admin-nav" data-page="users">
+                    <span class="nav-icon">▸</span>Usuários
+                </a>
+                <a href="#" class="admin-nav" data-page="reports">
+                    <span class="nav-icon">▸</span>Denúncias
+                </a>
+                <a href="#" class="admin-nav" data-page="bans">
+                    <span class="nav-icon">▸</span>Banimentos
+                </a>
+                <a href="#" class="admin-nav" data-page="contacts">
+                    <span class="nav-icon">▸</span>Contatos
+                </a>
+                <a href="#" class="admin-nav" data-page="purchases">
+                    <span class="nav-icon">▸</span>Compras
+                </a>
+                <a href="#" class="admin-nav" data-page="emails">
+                    <span class="nav-icon">▸</span>Emails
+                </a>
+                <a href="#" class="admin-nav" data-page="sessions">
+                    <span class="nav-icon">▸</span>Sessões
+                </a>
+                <a href="#" class="admin-nav" data-page="administrators">
+                    <span class="nav-icon">▸</span>Administradores
+                </a>
+                <a href="#" class="admin-nav" data-page="roles">
+                    <span class="nav-icon">▸</span>Cargos e Permissões
+                </a>
+                <a href="#" class="admin-nav" data-page="audit-logs">
+                    <span class="nav-icon">▸</span>Logs
+                </a>
+                <a href="#" class="admin-nav admin-back" data-page="settings">
+                    <span class="nav-icon">▸</span>Configurações
+                </a>
+            </nav>
+        </aside>
+
+        <main class="admin-content" id="admin-content">
+            <header class="admin-header">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="admin-header-actions">
+                    <span id="admin-user-chip" class="user-chip" style="display:none;"></span>
+                    <a href="../../index.html" class="admin-btn admin-back">← Voltar ao site</a>
+                </div>
+            </header>
+
+            <section id="page-dashboard" class="admin-page">
+                <div class="admin-card">
+                    <h2>Estatísticas</h2>
+                    <div class="admin-grid" id="dashboard-stats"></div>
+                </div>
+                <div class="admin-card">
+                    <h2>Atividades Recentes</h2>
+                    <div id="dashboard-logs"></div>
+                </div>
+            </section>
+
+            <section id="page-users" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Usuários</h2>
+                    <div class="search-bar">
+                        <input type="text" id="users-search" class="admin-input" placeholder="Pesquisar por ID, username ou email...">
+                        <select id="users-filter" class="admin-select">
+                            <option value="">Todos</option>
+                            <option value="active">Ativos</option>
+                            <option value="banned">Banidos</option>
+                            <option value="admins">Administradores</option>
+                            <option value="employees">Funcionários</option>
+                            <option value="recent">Contas recentes (7d)</option>
+                            <option value="old">Contas antigas</option>
+                        </select>
+                        <button class="admin-btn primary" id="users-search-btn">Pesquisar</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Cargo</th>
+                                    <th>Criado</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="users-pagination"></div>
+                </div>
+            </section>
+
+            <section id="page-reports" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Denúncias</h2>
+                    <div class="search-bar">
+                        <input type="text" id="reports-search" class="admin-input" placeholder="Pesquisar denúncias...">
+                        <select id="reports-status" class="admin-select">
+                            <option value="">Todos os status</option>
+                            <option value="open">Aberta</option>
+                            <option value="analyzing">Em análise</option>
+                            <option value="resolved">Resolvida</option>
+                            <option value="rejected">Rejeitada</option>
+                            <option value="archived">Arquivada</option>
+                        </select>
+                        <select id="reports-category" class="admin-select">
+                            <option value="">Todas categorias</option>
+                            <option value="Assédio">Assédio</option>
+                            <option value="Ameaças">Ameaças</option>
+                            <option value="Fraude">Fraude</option>
+                            <option value="Spam">Spam</option>
+                            <option value="Comportamento inadequado">Comportamento inadequado</option>
+                            <option value="Violação das regras">Violação das regras</option>
+                            <option value="Conteúdo ilegal">Conteúdo ilegal</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                        <select id="reports-priority" class="admin-select">
+                            <option value="">Todas prioridades</option>
+                            <option value="low">Baixa</option>
+                            <option value="medium">Média</option>
+                            <option value="high">Alta</option>
+                        </select>
+                        <button class="admin-btn primary" id="reports-search-btn">Pesquisar</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Denunciante</th>
+                                    <th>Denunciados</th>
+                                    <th>Categoria</th>
+                                    <th>Status</th>
+                                    <th>Prioridade</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="reports-pagination"></div>
+                </div>
+            </section>
+
+            <section id="page-bans" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Banimentos</h2>
+                    <div class="search-bar">
+                        <input type="text" id="bans-search" class="admin-input" placeholder="Username ou ID do usuário...">
+                        <button class="admin-btn primary" id="bans-search-btn">Pesquisar</button>
+                        <button class="admin-btn danger" id="ban-create-btn">+ Banir usuário</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuário</th>
+                                    <th>Motivo</th>
+                                    <th>Tipo</th>
+                                    <th>Duração</th>
+                                    <th>Início</th>
+                                    <th>Término</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bans-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-contacts" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Contatos</h2>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Assunto</th>
+                                    <th>Status</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contacts-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-purchases" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Compras</h2>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuário</th>
+                                    <th>Produto</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                    <th>Transação</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchases-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-emails" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Logs de Email</h2>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuário</th>
+                                    <th>Destinatário</th>
+                                    <th>Assunto</th>
+                                    <th>Status</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emails-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-sessions" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Sessões</h2>
+                    <div class="search-bar">
+                        <input type="text" id="sessions-search" class="admin-input" placeholder="Username ou ID...">
+                        <button class="admin-btn primary" id="sessions-search-btn">Pesquisar</button>
+                        <button class="admin-btn danger" id="sessions-revoke-all-btn">Revogar todas</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuário</th>
+                                    <th>Dispositivo</th>
+                                    <th>IP</th>
+                                    <th>Localização</th>
+                                    <th>Criada</th>
+                                    <th>Último acesso</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sessions-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-administrators" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Administradores</h2>
+                    <div class="search-bar">
+                        <input type="text" id="admins-search" class="admin-input" placeholder="Pesquisar administrador...">
+                        <button class="admin-btn primary" id="admins-search-btn">Pesquisar</button>
+                        <button class="admin-btn primary" id="admin-create-btn">+ Tornar admin</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Cargo</th>
+                                    <th>Criado</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admins-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-roles" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Cargos e Permissões</h2>
+                    <div class="search-bar">
+                        <button class="admin-btn primary" id="role-create-btn">+ Novo cargo</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Protegido</th>
+                                    <th>Permissões</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roles-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-audit-logs" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Logs de Auditoria</h2>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Admin</th>
+                                    <th>Ação</th>
+                                    <th>Usuário alvo</th>
+                                    <th>Detalhes</th>
+                                    <th>IP</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="audit-logs-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="audit-logs-pagination"></div>
+                </div>
+            </section>
+
+            <section id="page-settings" class="admin-page" hidden>
+                <div class="admin-card">
+                    <h2>Configurações</h2>
+                    <div id="settings-content"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="toast" id="admin-toast"></div>
+
+    <!-- MODAIS -->
+    <div class="admin-modal-overlay" id="modal-overlay">
+        <div class="admin-modal" id="admin-modal">
+            <h2 id="modal-title">Modal</h2>
+            <div id="modal-body"></div>
+            <div class="modal-actions" id="modal-actions"></div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+    <script src="../../site-theme.js"></script>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GodsTech Gen - The Gods</title>
+    <link rel="icon" type="image/png" href="Images/TheGods Studio - LOGO.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="site-theme.css">
+    <style>
+        :root {
+            --sidebar-w: clamp(168px, 17vw, 226px);
+            --sidebar-gap: clamp(18px, 3vw, 42px);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        body[data-admin-only-page] { visibility: visible; }
+        [data-admin-only-page][hidden] { display: none; }
+
+        .floating-logo {
+            position: fixed;
+            top: clamp(10px, 1.5vw, 18px);
+            left: clamp(10px, 1.5vw, 18px);
+            z-index: 1001;
+            width: clamp(68px, 7vw, 104px);
+            aspect-ratio: 1;
+            padding: 5px;
+            object-fit: contain;
+            border: 2px solid var(--theme-cyan);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, .72);
+            box-shadow: 0 0 24px rgba(0, 255, 234, .24);
+            animation: logoDrift 5s ease-in-out infinite;
+        }
+
+        .tool-sidebar {
+            top: clamp(96px, 10vw, 138px);
+            bottom: clamp(12px, 2vw, 24px);
+            width: var(--sidebar-w);
+            background: linear-gradient(180deg, rgba(0, 16, 18, .94), rgba(0, 0, 0, .86));
+            border: 1px solid rgba(0, 255, 234, .7);
+            border-left: 4px solid var(--theme-cyan);
+            border-radius: 4px 14px 14px 4px;
+            box-shadow: 8px 0 34px rgba(0, 255, 234, .08), inset -12px 0 30px rgba(0, 255, 234, .04);
+        }
+
+        .tool-sidebar::before {
+            content: 'GODSTECH / GEN';
+            display: block;
+            padding: 12px 14px 10px;
+            color: rgba(255, 255, 255, .55);
+            border-bottom: 1px solid rgba(0, 255, 234, .2);
+            font: 8px/1.6 'Press Start 2P', cursive;
+            letter-spacing: 1px;
+        }
+
+        .tool-sidebar a {
+            margin: 3px 8px;
+            padding: 14px 12px;
+            border: 1px solid transparent;
+            border-left: 2px solid rgba(0, 255, 234, .25);
+            color: rgba(255, 255, 255, .76);
+            font-size: clamp(8px, .75vw, 11px);
+            transition: background .25s ease, color .25s ease, border-color .25s ease, transform .25s ease;
+        }
+
+        .tool-sidebar a::before { content: '//'; left: 7px; }
+        .tool-sidebar a:hover,
+        .tool-sidebar a.active {
+            margin-left: 14px;
+            padding-left: 20px;
+            color: var(--theme-cyan);
+            background: rgba(0, 255, 234, .09);
+            border-color: rgba(0, 255, 234, .42);
+            border-left-color: var(--theme-cyan);
+            transform: none;
+        }
+
+        .tool-sidebar a.tool-back { color: var(--theme-cyan); margin-bottom: 18px; }
+        .tool-sidebar a.tool-back::before { content: ''; }
+        .tool-sidebar a.tool-disabled { color: rgba(255, 255, 255, .38); cursor: default; }
+        .tool-sidebar a.tool-disabled:hover { margin-left: 8px; padding-left: 12px; color: rgba(255, 255, 255, .38); background: transparent; border-color: transparent; border-left-color: rgba(0, 255, 234, .25); }
+
+        .tool-main {
+            position: relative;
+            z-index: 2;
+            width: min(100%, 1280px);
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: clamp(28px, 5vw, 64px) clamp(16px, 4vw, 56px) 48px;
+            padding-left: calc(var(--sidebar-w) + var(--sidebar-gap));
+        }
+
+        .title-box { animation: toolReveal .8s ease-out both; }
+        .title-box .title {
+            margin: 0;
+            padding: clamp(16px, 2vw, 26px) clamp(18px, 3vw, 38px);
+            color: var(--theme-cyan);
+            font: clamp(14px, 2.2vw, 25px)/1.55 'Press Start 2P', cursive;
+            text-align: center;
+            text-shadow: 0 0 18px rgba(0, 255, 234, .4);
+        }
+        .title-box .subtitle {
+            margin: -10px 0 4px;
+            color: rgba(255, 255, 255, .7);
+            font: clamp(7px, .85vw, 11px)/1.8 'Press Start 2P', cursive;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .tool-stage {
+            width: min(100%, 920px);
+            margin: clamp(42px, 7vw, 92px) auto 0;
+        }
+        .stage-heading {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            color: var(--theme-cyan);
+            font: clamp(10px, 1.2vw, 15px)/1.5 'Press Start 2P', cursive;
+        }
+        .stage-heading::before,
+        .stage-heading::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 234, .7));
+        }
+        .stage-heading::after { transform: rotate(180deg); }
+
+        .tool-panel {
+            margin-top: 28px;
+            padding: clamp(20px, 4vw, 40px);
+            border: 1px solid rgba(0, 255, 234, .45);
+            border-top: 3px solid var(--theme-cyan);
+            background: rgba(0, 0, 0, .68);
+            box-shadow: 0 0 36px rgba(0, 255, 234, .1), inset 0 0 30px rgba(0, 255, 234, .035);
+            animation: toolReveal .8s .18s ease-out both;
+        }
+        .panel-label {
+            margin: 0 0 18px;
+            color: var(--theme-cyan);
+            font: 9px/1.8 'Press Start 2P', cursive;
+            text-transform: uppercase;
+        }
+        .panel-copy {
+            max-width: 700px;
+            margin: 0;
+            color: rgba(255, 255, 255, .72);
+            font: clamp(9px, 1vw, 12px)/2 'Press Start 2P', cursive;
+        }
+        .status-line {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 28px;
+            padding: 10px 12px;
+            color: rgba(0, 255, 234, .85);
+            border: 1px solid rgba(0, 255, 234, .25);
+            font: 8px/1.5 'Press Start 2P', cursive;
+        }
+        .status-line::before { content: ''; width: 7px; height: 7px; background: var(--theme-cyan); box-shadow: 0 0 12px var(--theme-cyan); }
+
+        @keyframes logoDrift {
+            0%, 100% { transform: translate(0, 0) rotate(-1deg); }
+            50% { transform: translate(5px, 7px) rotate(2deg); }
+        }
+        @keyframes toolReveal { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 640px) {
+            :root { --sidebar-w: 92px; --sidebar-gap: 12px; }
+            .floating-logo { width: 54px; }
+            .tool-sidebar { top: 78px; }
+            .tool-sidebar::before { padding: 8px 6px; font-size: 5px; }
+            .tool-sidebar a { margin: 2px 4px; padding: 9px 5px; font-size: 5.5px; line-height: 1.5; }
+            .tool-sidebar a:hover, .tool-sidebar a.active { margin-left: 7px; padding-left: 9px; }
+            .tool-sidebar a.tool-disabled:hover { margin-left: 4px; padding-left: 5px; }
+            .tool-main { padding-top: 20px; padding-right: 8px; padding-left: calc(var(--sidebar-w) + var(--sidebar-gap)); }
+            .title-box .title { padding: 12px 10px; font-size: 11px; }
+            .title-box .subtitle { font-size: 6px; }
+            .stage-heading { gap: 8px; font-size: 7px; }
+            .tool-panel { padding: 18px 14px; }
+            .panel-copy { font-size: 7px; }
+        }
+    </style>
+</head>
+<body data-admin-only-page hidden>
+    <canvas id="matrix-canvas"></canvas>
+    <img class="floating-logo" src="Images/TheGods Studio - LOGO.png" alt="The Gods Studio">
+
+    <nav class="sidebar tool-sidebar" aria-label="Navegação da ferramenta">
+        <a class="tool-back" href="aplicativos.html">&lt;-- Voltar</a>
+        <a class="tool-disabled" href="#" aria-disabled="true">Phishing</a>
+        <a class="tool-disabled" href="#" aria-disabled="true">BruteForce</a>
+    </nav>
+
+    <main class="tool-main">
+        <section class="content-box title-box">
+            <h1 class="title">GodsTech-Gen</h1>
+            <p class="subtitle">Central de ferramentas autorizadas</p>
+        </section>
+
+        <section class="tool-stage" aria-labelledby="stage-title">
+            <h2 class="stage-heading" id="stage-title">Hacking / CyberSecurity</h2>
+            <div class="tool-panel">
+                <p class="panel-label">Ambiente preparado</p>
+                <p class="panel-copy">Esta central visual esta pronta para receber os modulos da GodsTech. As ferramentas serao disponibilizadas futuramente para uso autorizado.</p>
+                <div class="status-line">FRONTEND ONLINE / MODULOS EM DESENVOLVIMENTO</div>
+            </div>
+        </section>
+    </main>
+
+    <div class="toast" id="toast"></div>
+    <script src="site-theme.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

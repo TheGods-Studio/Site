@@ -1,0 +1,70 @@
+services:
+  - type: web
+    name: the-gods-studio
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        generateValue: true
+      - key: DB_SYNC_TOKEN
+        sync: false
+      - key: SYNC_SERVER
+        sync: false
+      - key: DB_REPO_PATH
+        value: db/accounts.db
+      - key: GIT_REMOTE
+        value: origin
+      - key: GIT_BRANCH
+        value: main
+      - key: GIT_USER_NAME
+        sync: false
+      - key: GIT_USER_EMAIL
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_SECURE
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+
+  - type: worker
+    name: the-gods-studio-sync
+    env: node
+    buildCommand: npm install
+    startCommand: npm run sync
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_SYNC_TOKEN
+        sync: false
+      - key: SYNC_SERVER
+        sync: false
+      - key: DB_REPO_PATH
+        value: db/accounts.db
+      - key: GIT_REMOTE
+        value: origin
+      - key: GIT_BRANCH
+        value: main
+      - key: GIT_USER_NAME
+        sync: false
+      - key: GIT_USER_EMAIL
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
